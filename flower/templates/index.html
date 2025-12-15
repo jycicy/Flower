@@ -1,0 +1,395 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}首页{% endblock %}
+
+{% block style %}
+<!-- 热门推荐卡片样式 -->
+<style>
+        /* 产品卡片样式 - 与flowers_list.html保持一致 */
+        .container {
+                top: 10px;
+                position: relative;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+        }
+
+        .product-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+                .product-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                }
+        }
+
+        @media (max-width: 480px) {
+                .product-grid {
+                        grid-template-columns: 2fr;
+                }
+        }
+
+        .product-card {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                overflow: hidden;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                background: #fff;
+        }
+
+        .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+                text-decoration: none;
+                color: inherit;
+        }
+
+        a:hover {
+                text-decoration: none;
+                /* 确保悬停时也没有下划线 */
+        }
+
+        .product-image {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+        }
+
+        .product-info {
+                padding: 15px;
+        }
+
+        .product-name {
+                font-size: 16px;
+                font-weight: bold;
+                margin-bottom: 8px;
+                color: #333;
+                height: 50px;
+                overflow: hidden;
+        }
+
+        .product-price {
+                font-size: 18px;
+                color: #e74c3c;
+                font-weight: bold;
+                margin-bottom: 10px;
+        }
+
+        .product-description {
+                font-size: 14px;
+                color: #666;
+                margin-bottom: 15px;
+                height: 20px;
+                overflow: hidden;
+        }
+</style>
+
+<!-- 页脚样式 -->
+<style>
+        .footer {
+                background-color: #2c3e50;
+                color: #ecf0f1;
+                padding: 20px 0 20px 0;
+                margin-top: 50px;
+        }
+
+        .footer-content {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+                margin-bottom: 10px;
+        }
+
+        .footer-section h4 {
+                color: #c91f2c;
+                margin-bottom: 15px;
+                font-size: 18px;
+        }
+
+        .footer-section p {
+                margin-bottom: 10px;
+                line-height: 1.6;
+        }
+
+        .footer-section ul {
+                list-style: none;
+                padding: 0;
+        }
+
+        .footer-section ul li {
+                margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+                color: #bdc3c7;
+                text-decoration: none;
+                transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+                color: #c91f2c;
+        }
+
+        .footer-bottom {
+                border-top: 1px solid #34495e;
+                padding-top: 20px;
+                text-align: center;
+                color: #95a5a6;
+        }
+
+        @media (max-width: 768px) {
+                .footer-content {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                }
+        }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<li><a href="#" style="color: #c91f2c;">首页</a></li>
+<li><a href="/goods">鲜花</a></li>
+<li><a href="/bloomwave">花漾</a></li>
+<li><a href="/other">其他</a></li>
+<li><a href="/about">关于我们</a></li>
+<li><a href="/cart">
+                <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                购物车
+        </a>
+</li>
+{% endblock %}
+
+{% block main %}
+<div class="container-fluid">
+        <!-- 轮播图开始 -->
+        <div id="flowerCarousel" class="carousel slide" data-ride="carousel">
+                <!-- 指示器 -->
+                <ol class="carousel-indicators">
+                        <li data-target="#flowerCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#flowerCarousel" data-slide-to="1"></li>
+                        <li data-target="#flowerCarousel" data-slide-to="2"></li>
+                        <li data-target="#flowerCarousel" data-slide-to="3"></li>
+                </ol>
+
+                <!-- 轮播项目 -->
+                <div class="carousel-inner">
+                        <div class="item active">
+                                <div class="carousel-item-content"
+                                        style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{% static 'img/carousel/carousel02.jpg' %}'); background-size: cover; background-position: center; height: 500px;">
+                                        <div class="carousel-caption">
+                                                <h1
+                                                        style="font-size: 3.5rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                                                        绽放你的美好时光</h1>
+                                                <p
+                                                        style="font-size: 1.5rem; max-width: 600px; margin: 20px auto; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                                                        精选全球优质鲜花，为每一个特殊时刻增添色彩</p>
+                                                <a href="/goods" class="btn btn-primary btn-lg"
+                                                        style="background-color: #c91f2c; border-color: #c91f2c; padding: 12px 30px; font-size: 1.2rem; border-radius: 30px;">立即选购</a>
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="item">
+                                <div class="carousel-item-content"
+                                        style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{% static 'img/carousel/carousel04.jpg' %}'); background-size: cover; background-position: center; height: 500px;">
+                                        <div class="carousel-caption">
+                                                <h1
+                                                        style="font-size: 3.5rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                                                        爱的传递</h1>
+                                                <p
+                                                        style="font-size: 1.5rem; max-width: 600px; margin: 20px auto; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                                                        用鲜花表达最真挚的情感</p>
+                                                <a href="/search/?keyword=爱" class="btn btn-primary btn-lg"
+                                                        style="background-color: #c91f2c; border-color: #c91f2c; padding: 12px 30px; font-size: 1.2rem; border-radius: 30px;">查看花束</a>
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="item">
+                                <div class="carousel-item-content"
+                                        style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{% static 'img/carousel/carousel05.jpg' %}'); background-size: cover; background-position: center; height: 500px;">
+                                        <div class="carousel-caption">
+                                                <h1
+                                                        style="font-size: 3.5rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                                                        节日特惠</h1>
+                                                <p
+                                                        style="font-size: 1.5rem; max-width: 600px; margin: 20px auto; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                                                        母亲节、情人节专属花束，限时优惠</p>
+                                                <a href="/goods" class="btn btn-primary btn-lg"
+                                                        style="background-color: #c91f2c; border-color: #c91f2c; padding: 12px 30px; font-size: 1.2rem; border-radius: 30px;">立即抢购</a>
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="item">
+                                <div class="carousel-item-content"
+                                        style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{% static 'img/carousel/carousel06.jpg' %}'); background-size: cover; background-position: center; height: 500px;">
+                                        <div class="carousel-caption">
+                                                <h1
+                                                        style="font-size: 3.5rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                                                        定制服务</h1>
+                                                <p
+                                                        style="font-size: 1.5rem; max-width: 600px; margin: 20px auto; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                                                        根据您的需求定制专属花束</p>
+                                                <a href="/about" class="btn btn-primary btn-lg"
+                                                        style="background-color: #c91f2c; border-color: #c91f2c; padding: 12px 30px; font-size: 1.2rem; border-radius: 30px;">了解详情</a>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+
+                <!-- 左右控制按钮 -->
+                <a class="left carousel-control" href="#flowerCarousel" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                        <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#flowerCarousel" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        <span class="sr-only">Next</span>
+                </a>
+        </div>
+        <!-- 轮播图结束 -->
+
+
+
+        <!-- 热门推荐开始 -->
+        <div class="container" style="margin-top: 10px;">
+                <div class="text-center" style="margin-bottom: 40px;">
+                        <h2
+                                style="color: #c91f2c; font-weight: bold; position: relative; display: inline-block; padding-bottom: 10px;">
+                                热门推荐
+                                <span
+                                        style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background-color: #c91f2c;"></span>
+                        </h2>
+                </div>
+
+                <div class="product-grid">
+                        {% for goods in hot_goods %}
+                        <a href="/goods/goods_detail/{{ goods.id }}/" target="_blank">
+                                <div class="product-card">
+                                        <img class="product-image"
+                                                src="{% if goods.image_url %}{{ goods.image_url }}{% else %}https://images.unsplash.com/photo-1518197110206-559b0a9f1b6f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80{% endif %}"
+                                                alt="{{ goods.title }}">
+                                        <div class="product-info">
+                                                <div class="product-name">{{ goods.title }}</div>
+                                                <div class="product-price">¥{{ goods.price }}</div>
+                                                <div class="product-description">{{ goods.description|default:"暂无描述" }}
+                                                </div>
+                                        </div>
+                                </div>
+                        </a>
+                        {% empty %}
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #666;">
+                                暂无推荐商品
+                        </div>
+                        {% endfor %}
+                </div>
+        </div>
+        <!-- 热门推荐结束 -->
+
+
+
+        <!-- 猜你喜欢开始 -->
+        <div class="container" style="margin-top: 10px;">
+                <div class="text-center" style="margin-bottom: 40px;">
+                        <h2
+                                style="color: #c91f2c; font-weight: bold; position: relative; display: inline-block; padding-bottom: 10px;">
+                                猜你喜欢
+                                <span
+                                        style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background-color: #c91f2c;"></span>
+                        </h2>
+                </div>
+
+                <div class="product-grid">
+                        {% for goods in guess_goods %}
+                        <a href="/goods/goods_detail/{{ goods.id }}/" target="_blank">
+                                <div class="product-card">
+                                        <img class="product-image"
+                                                src="{% if goods.image_url %}{{ goods.image_url }}{% else %}https://images.unsplash.com/photo-1518197110206-559b0a9f1b6f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80{% endif %}"
+                                                alt="{{ goods.title }}">
+                                        <div class="product-info">
+                                                <div class="product-name">{{ goods.title }}</div>
+                                                <div class="product-price">¥{{ goods.price }}</div>
+                                                <div class="product-description">{{ goods.description|default:"暂无描述" }}
+                                                </div>
+                                        </div>
+                                </div>
+                        </a>
+                        {% empty %}
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #666;">
+                                暂无推荐商品
+                        </div>
+                        {% endfor %}
+                </div>
+        </div>
+        <!-- 猜你喜欢结束 -->
+
+</div>
+
+<!-- 页脚开始 -->
+<footer class="footer">
+        <div class="container">
+                <div class="footer-content">
+                        <div class="footer-section">
+                                <h4>关于我们</h4>
+                                <p>我们致力于为您提供最新鲜、最优质的鲜花，为每一个特殊时刻增添色彩。</p>
+                        </div>
+                        <div class="footer-section">
+                                <h4>联系方式</h4>
+                                <p><i class="glyphicon glyphicon-earphone"></i> 400-123-4567</p>
+                                <p><i class="glyphicon glyphicon-envelope"></i> jycicy@qq.com</p>
+                                <p><i class="glyphicon glyphicon-envelope"></i> jycicy412@163.com</p>
+                        </div>
+                        <div class="footer-section">
+                                <h4>服务支持</h4>
+                                <ul>
+                                        <li><a href="/about">关于我们</a></li>
+                                        <li><a href="#">配送说明</a></li>
+                                        <li><a href="#">退换货政策</a></li>
+                                        <li><a href="#">隐私政策</a></li>
+                                </ul>
+                        </div>
+                </div>
+                <div class="footer-bottom">
+                        <p>&copy; 2025 鲜花网. 保留所有权利。</p>
+                </div>
+        </div>
+</footer>
+<!-- 页脚结束 -->
+
+<script>
+        // 设置轮播图自动播放间隔
+        $('.carousel').carousel({
+                interval: 3000, // 将间隔从1秒调整为5秒，更合理
+                pause: "hover",
+                wrap: true
+        });
+
+        // 添加悬停效果
+        $('.thumbnail').hover(
+                function () {
+                        $(this).css('transform', 'translateY(-10px)');
+                },
+                function () {
+                        $(this).css('transform', 'translateY(0)');
+                }
+        );
+
+        // 确保页面加载完成后初始化轮播图
+        $(document).ready(function () {
+                $('#flowerCarousel').carousel({
+                        interval: 5000,
+                        pause: "hover",
+                        wrap: true
+                });
+        });
+</script>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

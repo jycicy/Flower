@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ goods.title }}</title>
+  {% load static %}
+  <link rel="icon" type="image/x-icon" href="{% static 'img/logo/logo.png' %}">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      background-color: #fffaf0;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .breadcrumb {
+      margin-bottom: 20px;
+      color: #999;
+    }
+
+    .breadcrumb a {
+      color: #ff6b6b;
+      text-decoration: none;
+    }
+
+    .product-detail {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .product-images {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .main-image {
+      width: 65%;
+      height: 400px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .main-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+    }
+
+    .thumbnail-images {
+      display: flex;
+      gap: 16px;
+    }
+
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .thumbnail.active {
+      border-color: #ff6b6b;
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .product-title {
+      font-size: 28px;
+      margin-bottom: 15px;
+      color: #d63384;
+    }
+
+    .product-price {
+      font-size: 24px;
+      color: #ff6b6b;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .original-price {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+
+    .product-meta {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .meta-item {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .meta-label {
+      width: 80px;
+      color: #666;
+    }
+
+    .meta-value {
+      flex: 1;
+    }
+
+    .product-options {
+      margin-bottom: 25px;
+    }
+
+    .option-group {
+      margin-bottom: 15px;
+    }
+
+    .option-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    select,
+    .quantity-selector {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+    }
+
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .total {
+      display: flex;
+      align-items: center;
+      margin-left: 160px;
+      font-size: 22px;
+      color: #ff6b6b;
+      font-weight: bold;
+
+    }
+
+    .quantity-input {
+      width: 60px;
+      height: 40px;
+      text-align: center;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 15px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-buy {
+      flex: 2;
+      background-color: #d63384;
+      color: white;
+    }
+
+    .btn-cart {
+      flex: 1;
+      background-color: #ff6b6b;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .product-description {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .description-tabs {
+      display: flex;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 15px 25px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tab.active {
+      color: #d63384;
+      border-bottom: 3px solid #d63384;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .description-content h3 {
+      color: #d63384;
+      margin-bottom: 15px;
+    }
+
+    .description-content p {
+      margin-bottom: 15px;
+    }
+
+    .specifications {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    .specifications th,
+    .specifications td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .specifications th {
+      background-color: #f8f9fa;
+      width: 30%;
+    }
+
+    @media (max-width: 768px) {
+      .product-detail {
+        flex-direction: column;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <!-- 评价相关样式  -->
+  <style>
+    .review-stats {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .average-rating {
+      text-align: center;
+      margin-right: 30px;
+    }
+
+    .avg-score {
+      font-size: 36px;
+      color: #ff6b6b;
+      font-weight: bold;
+    }
+
+    .rating-details {
+      flex: 1;
+    }
+
+    .rating-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .rating-label {
+      width: 60px;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      margin: 0 10px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background-color: #ff6b6b;
+    }
+
+    .rating-count {
+      width: 50px;
+      text-align: right;
+    }
+
+    .star-rating {
+      display: inline-block;
+    }
+
+    .star {
+      font-size: 24px;
+      color: #ddd;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .star:hover,
+    .star.active,
+    .star.selected {
+      color: #ff6b6b;
+    }
+
+    .review-form-container {
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .comment-input textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+    }
+
+    .btn-review {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-review:hover {
+      background-color: #0056b3;
+    }
+
+    .review-item {
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .reviewer-name {
+      font-weight: bold;
+    }
+
+    .review-date {
+      color: #999;
+      font-size: 14px;
+    }
+
+    .review-rating .star {
+      font-size: 18px;
+      color: #ff6b6b;
+    }
+
+    .review-comment {
+      line-height: 1.6;
+    }
+
+    .pagination {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .pagination a {
+      padding: 8px 12px;
+      margin: 0 4px;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      color: #007bff;
+    }
+
+    .pagination a:hover {
+      background-color: #e9ecef;
+    }
+
+    .pagination .current {
+      padding: 8px 12px;
+      margin: 0 4px;
+    }
+
+    /* 添加在评价相关样式部分 */
+    .review-form-toggle {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .review-form-toggle .btn-review {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .review-form-toggle .btn-review:hover {
+      background-color: #0056b3;
+    }
+
+    /* 用户头像样式 */
+    .reviewer-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+      border: 2px solid #f0f0f0;
+    }
+
+    .profile-info h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .review-date {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .review-rating {
+      margin: 10px 0;
+    }
+
+    .review-comment {
+      margin-top: 10px;
+      line-height: 1.6;
+      color: #555;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- 面包屑 -->
+    <div class="breadcrumb">
+      <a href="/index">首页</a> > <a href="/goods">鲜花</a> > {{ goods.title }}
+    </div>
+
+    <div class="product-detail">
+      <!-- 图片展示区 -->
+      <div class="product-images">
+        <div class="main-image">
+          <!-- 如果有缩略图则使用第一张缩略图，否则使用主图，都没有则使用默认图片 -->
+          <img id="mainImage" src="{% if goods.thumbnails and goods.thumbnails.0 %}{{ goods.thumbnails.0 }}{% endif %}"
+            alt="{{ goods.title }}">
+        </div>
+        <div class="thumbnail-images">
+          {% if goods.thumbnails %}
+          {% for thumbnail in goods.thumbnails|slice:":4" %}
+          <div class="thumbnail {% if forloop.first %}active{% endif %}">
+            <img src="{{ thumbnail }}" alt="缩略图{{ forloop.counter }}">
+          </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 商品标题和价格信息区 -->
+      <div class="product-info">
+        <h1 class="product-title">{{ goods.title }}</h1>
+        <div class="product-price">
+          {{ goods.price }}
+        </div>
+
+        <div class="product-meta">
+          <div class="meta-item">
+            <span class="meta-label">花材:</span>
+            <span class="meta-value">{{ goods.description|default:"暂无花材信息" }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">包装:</span>
+            <span class="meta-value">{{ goods.packaging|default:"暂无包装信息" }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">适用:</span>
+            <span class="meta-value">{{ goods.scenarios|default:"暂无适用场景信息" }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">花语:</span>
+            <span class="meta-value">{{ goods.meaning|default:"暂无花语信息" }}</span>
+          </div>
+        </div>
+
+        <div class="product-options">
+          <div class="option-group">
+            <label class="option-label">包装</label>
+            <select id="package-select" onchange="updatePackagePrice()">
+              <option value="0">无礼盒</option>
+              <option value="10">品牌原装礼盒 (¥10)</option>
+              <option value="29">至臻心意礼盒 (¥29)</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label class="option-label">数量</label>
+            <div class="quantity-selector">
+              <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+              <input type="text" class="quantity-input" id="quantity" value="1" readonly>
+              <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+
+              <div class="total"></div>
+            </div>
+          </div>
+        </div>
+        <br>
+
+        <div class="action-buttons">
+
+          <button class="btn btn-buy">立即购买</button>
+          <button class="btn btn-cart">加入购物车</button>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 商品详细信息 -->
+    <div class="product-description">
+
+      <!-- 标头 -->
+      <div class="description-tabs">
+        <div class="tab active" onclick="switchTab('description')">商品详情</div>
+        <div class="tab" onclick="switchTab('specifications')">规格参数</div>
+        <div class="tab" onclick="switchTab('reviews')">用户评价</div>
+      </div>
+
+      <!-- 商品详情 -->
+      <div id="description" class="tab-content active">
+        <div class="description-content">
+          <h3>产品介绍</h3>
+          <p>{{ goods.description|default:"暂无商品描述" }}</p>
+
+          <h3>设计理念</h3>
+          <p>以经典红玫瑰为主体，象征着热烈的爱情与真挚的情感。粉色包装纸温柔浪漫，白色棉纸增添纯净感，整体设计简约而不失优雅，是表达爱意的完美选择。</p>
+
+          <h3>适用场景</h3>
+          <p>{{ goods.scenarios|default:"暂无适用场景信息" }}</p>
+
+          <h3>配送说明</h3>
+          <p>我们承诺使用专业鲜花包装，确保花材新鲜。配送范围覆盖全国主要城市，支持定时配送服务。</p>
+        </div>
+      </div>
+
+      <!-- 规格参数 -->
+      <div id="specifications" class="tab-content">
+        <table class="specifications">
+          <tr>
+            <th>花材</th>
+            <td>{{ goods.materials|default:"暂无花材信息" }}</td>
+          </tr>
+          <tr>
+            <th>包装材料</th>
+            <td>{{ goods.packaging|default:"暂无包装信息" }}</td>
+          </tr>
+          <tr>
+            <th>花束尺寸</th>
+            <td>直径约30cm，高度约40cm</td>
+          </tr>
+          <tr>
+            <th>保鲜期</th>
+            <td>正常养护下可保持5-7天新鲜</td>
+          </tr>
+          <tr>
+            <th>配送范围</th>
+            <td>全国主要城市（偏远地区需提前咨询）</td>
+          </tr>
+          <tr>
+            <th>配送时间</th>
+            <td>每日9:00-18:00（可指定时间段）</td>
+          </tr>
+          <tr>
+            <th>养护建议</th>
+            <td>斜切花茎、每日换水、避免阳光直射</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- 用户评价(有待完善改进) -->
+      {% load math_extras %}
+      {% load review_tags %}
+      <div id="reviews" class="tab-content">
+        <div class="description-content">
+          <h3>用户评价</h3>
+
+          <!-- 评价统计 -->
+          {% if total_reviews %}
+          <div class="review-stats">
+            <div class="average-rating">
+              <div class="avg-score">{{ avg_rating }}</div>
+              <div>{{ total_reviews }}条评论</div>
+            </div>
+            <div class="rating-details">
+              {% for i in "54321" %}
+              <div class="rating-bar">
+                <span class="rating-label">{{ i }}星</span>
+                <div class="progress-bar">
+                  <div class="progress" style="width: { { rating_percentages|get_item:i } }%"></div>
+                </div>
+                <span class="rating-count">{{ rating_counts|get_item:i }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- 提交评价表单 (仅限登录用户) -->
+          {% if user.is_authenticated %}
+          <div class="review-form-toggle">
+            <button id="show-review-form" class="btn btn-review">我要评价</button>
+          </div>
+          <div class="review-form-container" id="review-form-container" style="display: none;">
+            <h4>我要评价</h4>
+            <form id="review-form">
+              <div class="rating-input">
+                <label>评分：</label>
+                <div class="star-rating" id="star-rating">
+                  <span class="star" data-rating="1">★</span>
+                  <span class="star" data-rating="2">★</span>
+                  <span class="star" data-rating="3">★</span>
+                  <span class="star" data-rating="4">★</span>
+                  <span class="star" data-rating="5">★</span>
+                </div>
+                <input type="hidden" id="rating-input" name="rating" value="0">
+              </div>
+              <div class="comment-input">
+                <label for="comment">评价内容：</label>
+                <textarea id="comment" name="comment" rows="4" placeholder="分享您的购买体验..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-review">提交评价</button>
+              <button type="button" id="cancel-review" class="btn" style="margin-left: 10px;">取消</button>
+            </form>
+          </div>
+          {% else %}
+          <p><a href="{% url 'userapp:login' %}?next={{ request.get_full_path }}">登录</a> 后可发表评价</p>
+          {% endif %}
+
+          <!-- 评价列表 -->
+          <!-- 评价列表 -->
+          <div id="reviews-list">
+            {% if reviews %}
+            {% for review in reviews %}
+            <div class="review-item">
+              <div class="review-header">
+                <div class="reviewer-info">
+                  {% if review.user.avatar %}
+                  <img src="{{ review.user.avatar.url }}" alt="头像" class="profile-avatar">
+                  {% else %}
+                  <img src="{% static 'img/default_avatar.png' %}" alt="默认头像" class="profile-avatar">
+                  {% endif %}
+                  <div class="profile-info">
+                    <h3>
+                      {% if review.user.nickname %}
+                      {{ review.user.nickname }}
+                      {% else %}
+                      {{ review.user.username }}
+                      {% endif %}
+                    </h3>
+                    <div class="review-date">{{ review.created_at|date:"Y-m-d H:i" }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 星级显示部分 -->
+              <div class="review-rating">
+                {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %} <span class="star active">★</span>
+                  {% else %}
+                  <span class="star">★</span>
+                  {% endif %}
+                  {% endfor %}
+              </div>
+              <div class="review-comment">{{ review.comment }}</div>
+            </div>
+            {% endfor %}
+
+            {% else %}
+            <p>暂无评价</p>
+            {% endif %}
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  </div>
+
+  <script src="{% static 'js/message.js' %}"></script>
+  <script src="{% static 'js/getCookie.js' %}"></script>
+
+  <!-- 缩略图点击事件 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 为缩略图添加点击事件
+      document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.addEventListener('click', function () {
+          // 移除所有缩略图的active状态
+          document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+          // 为当前点击的缩略图添加active状态
+          this.classList.add('active');
+
+          // 获取缩略图中的图片src
+          const thumbImgSrc = this.querySelector('img').src;
+          // 设置为主图
+          const mainImage = document.getElementById('mainImage');
+          if (mainImage) {
+            mainImage.src = thumbImgSrc;
+          }
+        });
+      });
+    });
+  </script>
+
+  <!-- 计算总价：基础价格 -->
+  <script>
+    //全局变量礼盒价格
+    let packagePrice = 0;
+
+    // 更新礼盒价格的函数
+    function updatePackagePrice() {
+      const packageSelect = document.getElementById('package-select');
+      packagePrice = parseInt(packageSelect.value);
+      const quantity = parseInt(document.getElementById('quantity').value) || 1;
+      updateTotalPrice(quantity);
+    }
+
+    // 数量选择器
+    function changeQuantity(change) {
+      const quantityInput = document.getElementById('quantity');
+      let quantity = parseInt(quantityInput.value);
+      quantity += change;
+      if (quantity < 1) quantity = 1;
+      quantityInput.value = quantity;
+      // 更新总价显示
+      updateTotalPrice(quantity);
+    }
+    // 更新总价显示
+    function updateTotalPrice(quantity) {
+      // 从价格元素中提取基础价格数字
+      const priceText = document.querySelector('.product-price').textContent;
+      let price = 0;
+
+      // 使用正则表达式提取价格数字
+      const priceMatch = priceText.match(/[¥￥]\s*(\d+\.?\d*)/);
+      if (priceMatch && priceMatch[1]) {
+        price = parseFloat(priceMatch[1]);
+      } else {
+        // 如果没有找到价格，尝试获取第一个数字
+        const firstNumberMatch = priceText.match(/\d+\.?\d*/);
+        if (firstNumberMatch) {
+          price = parseFloat(firstNumberMatch[0]);
+        }
+      }
+
+      // 计算总价：基础价格 * 数量 + 礼盒价格
+      const total = quantity * price + packagePrice;
+
+      // 更新总价显示
+      if (packagePrice > 0) {
+        document.querySelector('.total').textContent = `总计: ¥${total.toFixed(2)}`;
+      } else {
+        document.querySelector('.total').textContent = `总计: ¥${total.toFixed(2)}`;
+      }
+    }
+    // 页面加载完成后初始化总价
+    document.addEventListener('DOMContentLoaded', function () {
+      // 初始化总价显示
+      const initialQuantity = parseInt(document.getElementById('quantity').value) || 1;
+      updateTotalPrice(initialQuantity);
+    });
+
+  </script>
+
+  <!-- 切换标签页(商品详情/规格参数/用户评价) -->
+  <script>
+    function switchTab(tabId) {
+      // 隐藏所有标签内容
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+
+      // 移除所有标签的active状态
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      // 显示选中的标签内容
+      document.getElementById(tabId).classList.add('active');
+
+      // 给当前标签添加active状态
+      event.target.classList.add('active');
+    }
+  </script>
+
+  <!-- 加入购物车 -->
+  <script>
+    // 加入购物车功能
+    document.addEventListener('DOMContentLoaded', function () {
+      const addToCartBtn = document.querySelector('.btn-cart');
+      if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function () {
+          // 检查用户是否登录（假设在模板中可以访问用户信息）
+          // 这里我们直接尝试添加，如果未登录会在后端处理
+
+          const goodsId = "{{ goods.id }}";
+          const quantity = parseInt(document.getElementById('quantity').value);
+          const packageSelect = document.getElementById('package-select');
+          const packageOption = packageSelect.options[packageSelect.selectedIndex].text;
+          const packagePrice = packageSelect.value;
+
+          // 发送AJAX请求
+          fetch('/cart/add_to_cart/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+              goods_id: goodsId,
+              quantity: quantity,
+              package: packageOption,
+              package_price: packagePrice
+            })
+          })
+            .then(response => {
+              if (response.status === 403) {
+                // 未登录，重定向到登录页面
+                alert('请先登录！');
+                window.location.href = '/user/login/?next=' + encodeURIComponent(window.location.href);
+                return;
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data && data.success) {
+                Message.success('成功加入购物车!')
+              } else if (data) {
+                Message.error('加入购物车失败！')
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              Message.woring('请求错误!')
+            });
+        });
+      }
+    });
+  </script>
+
+  <!-- 立即购买 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const buyNowBtn = document.querySelector('.btn-buy');
+      buyNowBtn.addEventListener('click', function () {
+        const goodsId = "{{ goods.id }}";
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const packageSelect = document.getElementById('package-select');
+        const packageOption = packageSelect.options[packageSelect.selectedIndex].text;
+        const packagePrice = packageSelect.value;
+
+        // 发送AJAX请求
+        fetch('/order/create/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({
+            goods_id: goodsId,
+            quantity: quantity,
+            package: packageOption,
+            package_price: packagePrice
+          })
+        })
+          .then(response => {
+            if (response.status === 403) {
+              // 未登录，重定向到登录页面
+              alert('请先登录！');
+              window.location.href = '/user/login/?next=' + encodeURIComponent(window.location.href);
+              return;
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data && data.success) {
+              // 订单创建成功，跳转到订单页面
+              window.location.href = '/order/?order_id=' + data.order_id;
+            } else {
+              // 订单创建失败，显示错误信息
+              alert('订单创建失败: ' + (data.error || '未知错误'));
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('请求错误: ' + error);
+          });
+      });
+    });
+  </script>
+
+  <!-- 用户评价 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 绑定显示评价表单按钮
+      const showReviewFormBtn = document.getElementById('show-review-form');
+      const reviewFormContainer = document.getElementById('review-form-container');
+      const cancelReviewBtn = document.getElementById('cancel-review');
+      const commentTextarea = document.getElementById('comment'); // 定义commentTextarea变量
+
+      if (showReviewFormBtn) {
+        showReviewFormBtn.addEventListener('click', function () {
+          reviewFormContainer.style.display = 'block';
+          showReviewFormBtn.style.display = 'none';
+          // 当显示表单时，聚焦到评论框
+          if (commentTextarea) {
+            commentTextarea.focus();
+          }
+        });
+      }
+
+      if (cancelReviewBtn) {
+        cancelReviewBtn.addEventListener('click', function () {
+          reviewFormContainer.style.display = 'none';
+          if (showReviewFormBtn) {
+            showReviewFormBtn.style.display = 'inline-block';
+          }
+          // 清空表单
+          document.getElementById('rating-input').value = '0';
+          document.getElementById('comment').value = '';
+          // 移除星星高亮
+          document.querySelectorAll('.star-rating .star').forEach(star => {
+            star.classList.remove('selected');
+          });
+        });
+      }
+
+      // 绑定星星评分事件
+      bindStarRatingEvents();
+
+      // 绑定评价表单提交事件
+      const reviewForm = document.getElementById('review-form');
+      if (reviewForm) {
+        reviewForm.addEventListener('submit', submitReview);
+      }
+
+      // 添加键盘事件监听 - 在评论文本框中按Ctrl+Enter提交表单
+      if (commentTextarea) {
+        commentTextarea.addEventListener('keydown', function (event) {
+          // 检查是否按下了Enter
+          if (event.key === 'Enter') {
+            event.preventDefault(); // 阻止默认行为
+            // 触发表单提交
+            if (reviewForm) {
+              reviewForm.dispatchEvent(new Event('submit'));
+            }
+          }
+        });
+      }
+    });
+
+    // 绑定星星评分事件
+    function bindStarRatingEvents() {
+      const stars = document.querySelectorAll('.star-rating .star');
+      const ratingInput = document.getElementById('rating-input');
+
+      stars.forEach(star => {
+        // 鼠标悬停效果
+        star.addEventListener('mouseover', function () {
+          const rating = parseInt(this.dataset.rating);
+          highlightStars(rating);
+        });
+
+        // 鼠标离开效果
+        star.addEventListener('mouseout', function () {
+          const currentRating = parseInt(ratingInput.value);
+          highlightStars(currentRating);
+        });
+
+        // 点击选择评分
+        star.addEventListener('click', function () {
+          const rating = parseInt(this.dataset.rating);
+          ratingInput.value = rating;
+          highlightStars(rating);
+        });
+      });
+
+      // 高亮星星
+      function highlightStars(rating) {
+        const stars = document.querySelectorAll('.star-rating .star');
+        stars.forEach((star, index) => {
+          if (index < rating) {
+            star.classList.add('selected');
+          } else {
+            star.classList.remove('selected');
+          }
+        });
+      }
+    }
+
+    // 提交评价
+    function submitReview(event) {
+      event.preventDefault();
+
+      const goodsId = "{{ goods.id }}";
+      const rating = document.getElementById('rating-input').value;
+      const comment = document.getElementById('comment').value;
+
+      if (rating === '0') {
+        Message.warning('请选择评分');
+        return;
+      }
+
+      if (!comment.trim()) {
+        Message.warning('请输入评价内容');
+        return;
+      }
+
+      fetch(`/goods/goods_detail/${goodsId}/add_review/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+          rating: rating,
+          comment: comment
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            Message.success('评价提交成功');
+            // 清空表单
+            document.getElementById('rating-input').value = '0';
+            document.getElementById('comment').value = '';
+            // 移除星星高亮
+            document.querySelectorAll('.star-rating .star').forEach(star => {
+              star.classList.remove('selected');
+            });
+            // 隐藏表单并显示按钮
+            const reviewFormContainer = document.getElementById('review-form-container');
+            const showReviewFormBtn = document.getElementById('show-review-form');
+            if (reviewFormContainer) {
+              reviewFormContainer.style.display = 'none';
+            }
+            if (showReviewFormBtn) {
+              showReviewFormBtn.style.display = 'inline-block';
+            }
+            // 重新加载页面以显示新评论
+            setTimeout(() => {
+              location.reload();
+            }, 300);
+          } else {
+            Message.error(data.message || '评价提交失败');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Message.error('请求错误');
+        });
+    }
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}其他商品{% endblock %}
+
+{% block style %}
+<style>
+  .other-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 20px;
+    text-align: center;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+  }
+
+  .content-wrapper {
+    background: #fff;
+    border-radius: 15px;
+    padding: 60px 40px;
+
+    margin-top: 30px;
+  }
+
+  .icon-container {
+    font-size: 5rem;
+    color: #c91f2c;
+    margin-bottom: 30px;
+  }
+
+  .message-title {
+    color: #333;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .message-content {
+    color: #666;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+
+  .countdown-timer {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 30px 0;
+    display: inline-block;
+  }
+
+  .countdown-title {
+    color: #c91f2c;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .countdown-text {
+    font-size: 1.1rem;
+    color: #555;
+  }
+
+  .back-button {
+    display: inline-block;
+    background-color: #c91f2c;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid #c91f2c;
+    margin-top: 20px;
+  }
+
+  .back-button:hover {
+    background-color: transparent;
+    color: #c91f2c;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(201, 31, 44, 0.3);
+  }
+
+  .features-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin: 40px 0;
+  }
+
+  .feature-item {
+    flex: 1;
+    min-width: 200px;
+    max-width: 250px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .feature-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-color: #c91f2c;
+  }
+
+  .feature-icon {
+    font-size: 2.5rem;
+    color: #c91f2c;
+    margin-bottom: 15px;
+  }
+
+  .feature-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .feature-description {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .other-container {
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    .content-wrapper {
+      padding: 40px 20px;
+    }
+
+    .message-title {
+      font-size: 1.8rem;
+    }
+
+    .message-content {
+      font-size: 1rem;
+    }
+
+    .features-list {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .feature-item {
+      max-width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<li><a href="/index">首页</a></li>
+<li><a href="/goods">鲜花</a></li>
+<li><a href="/bloomwave">花漾</a></li>
+<li><a href="/other" style="color: #c91f2c;">其他</a></li>
+<li><a href="/about">关于我们</a></li>
+<li><a href="/cart">
+    <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+    购物车
+  </a>
+</li>
+{% endblock %}
+
+{% block main %}
+<div class="other-container">
+  <div class="content-wrapper">
+    <div class="icon-container">
+      <span class="glyphicon glyphicon-time"></span>
+    </div>
+
+    <h1 class="message-title">敬请期待</h1>
+
+    <div class="message-content">
+      <p>该页面暂不售卖其他物品，请耐心等待。</p>
+      <p>我们正在努力为您准备更多精美的商品，敬请期待我们的新品上架！</p>
+    </div>
+
+    <div class="countdown-timer">
+      <div class="countdown-title">新品预告</div>
+      <div class="countdown-text">我们正在筹备更多优质商品，预计将在近期上线</div>
+    </div>
+
+    <div class="features-list">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="glyphicon glyphicon-heart"></span>
+        </div>
+        <h3 class="feature-title">精选商品</h3>
+        <p class="feature-description">精心挑选的优质商品，品质保证</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="glyphicon glyphicon-plane"></span>
+        </div>
+        <h3 class="feature-title">快速配送</h3>
+        <p class="feature-description">高效的物流体系，快速送达</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="glyphicon glyphicon-gift"></span>
+        </div>
+        <h3 class="feature-title">精美包装</h3>
+        <p class="feature-description">专业包装设计，提升礼品价值</p>
+      </div>
+    </div>
+
+    <a href="/index" class="back-button">
+      <span class="glyphicon glyphicon-arrow-left"></span>
+      返回首页
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // 添加一些简单的动画效果
+    const featureItems = document.querySelectorAll('.feature-item');
+    featureItems.forEach((item, index) => {
+      // 添加延迟动画效果
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        item.style.transition = 'all 0.5s ease';
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+      }, 300 + index * 200);
+    });
+  });
+</script>
+{% endblock %}

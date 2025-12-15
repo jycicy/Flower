@@ -1,0 +1,161 @@
+<!-- templates/searchapp/search_results.html -->
+{% extends "base.html" %}
+
+{% block title %}搜索 "{{ keyword }}" 的结果{% endblock %}
+
+{% block style %}
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .container {
+    top: 70px;
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 60px;
+  }
+
+  @media (max-width: 768px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-grid {
+      grid-template-columns: 2fr;
+    }
+  }
+
+  .product-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  /* 移除链接的下划线 */
+  .product-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* 确保悬停时也没有下划线 */
+  .product-link:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .product-info {
+    padding: 15px;
+  }
+
+  .product-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+    height: 50px;
+    overflow: hidden;
+  }
+
+  .product-price {
+    font-size: 18px;
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .product-description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+    height: 20px;
+    overflow: hidden;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #666;
+  }
+
+  .error {
+    text-align: center;
+    padding: 50px;
+    color: #e74c3c;
+    font-size: 18px;
+  }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<li><a href="/index">首页</a></li>
+<li><a href="/goods">鲜花</a></li>
+<li><a href="/bloomwave">花漾</a></li>
+<li><a href="/category">分类</a></li>
+<li><a href="/about">关于我们</a></li>
+<li><a href="/cart">
+    <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+    购物车</a></li>
+{% endblock %}
+
+{% block main %}
+<div class="container" style="margin-top: -20px;">
+  <h2>搜索结果</h2>
+  <p>搜索关键词: "{{ keyword }}" (共找到 {{ total_count }} 个结果)</p>
+  <br>
+
+  {% if products %}
+  <div id="product-list" class="product-grid">
+    {% for product in products %}
+    <!-- 使用自定义的product-link类来确保没有下划线 -->
+    <a href="/goods/goods_detail/{{ product.id }}/" target="_blank" class="product-link">
+      <div class="product-card">
+        <img class="product-image" src="{{ product.image_url }}" alt="{{ product.title }}">
+        <div class="product-info">
+          <div class="product-name">{{ product.title }}</div>
+          <div class="product-price">¥{{ product.price }}</div>
+          <div class="product-description">{{ product.description }}</div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="alert alert-info">
+    <p>抱歉，没有找到与 "{{ keyword }}" 相关的商品。</p>
+    <p>建议:</p>
+    <ul>
+      <li>检查输入是否正确</li>
+      <li>尝试使用其他关键词</li>
+      <li>使用更通用的关键词</li>
+    </ul>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>用户登录 - 鲜花商城</title>
+  {% load static %}
+  <link rel="icon" type="image/x-icon" href="{% static 'img/logo/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 彩球背景装饰 */
+    .floating-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 107, 107, 0.1);
+      animation: float 15s infinite ease-in-out;
+      z-index: 0;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+
+      25% {
+        transform: translate(20px, 20px) rotate(90deg);
+      }
+
+      50% {
+        transform: translate(0, 40px) rotate(180deg);
+      }
+
+      75% {
+        transform: translate(-20px, 20px) rotate(270deg);
+      }
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 1;
+      width: 800px;
+      height: 550px;
+      background: rgba(255, 255, 255, 0.95);
+      margin: 5% auto;
+      display: flex;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .login-form-section {
+      flex: 1;
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .welcome-section {
+      flex: 1;
+      background: linear-gradient(135deg, #fffcdc 0%, #d9a7c7 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .form-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-title h3 {
+      font-size: 24px;
+      color: #333;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #ff6b6b;
+      box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.1);
+      outline: none;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .btn-login:hover {
+      background-color: #ff5252;
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .form-footer a {
+      color: #ff6b6b;
+      text-decoration: none;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .welcome-content h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .welcome-content p {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .btn-register {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-register:hover {
+      background: white;
+      color: #ff6b6b;
+    }
+
+    .alert {
+      border-radius: 6px;
+      padding: 10px 15px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+      color: #155724;
+    }
+
+    .alert-error {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      color: #721c24;
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        flex-direction: column;
+        height: auto;
+        width: 90%;
+        margin: 10% auto;
+      }
+
+      .welcome-section {
+        padding: 30px 20px;
+      }
+
+      .login-form-section {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 彩球背景装饰 -->
+  <div class="floating-circle" style="width: 80px; height: 80px; left: 10%; top: 15%;"></div>
+  <div class="floating-circle"
+    style="width: 120px; height: 120px; left: 80%; top: 10%; background: rgba(78, 205, 196, 0.1);"></div>
+  <div class="floating-circle"
+    style="width: 60px; height: 60px; left: 20%; top: 80%; background: rgba(255, 107, 107, 0.15);"></div>
+  <div class="floating-circle"
+    style="width: 100px; height: 100px; left: 70%; top: 70%; background: rgba(78, 205, 196, 0.15);"></div>
+  <div class="floating-circle" style="width: 70px; height: 70px; left: 40%; top: 40%;"></div>
+  <div class="floating-circle"
+    style="width: 90px; height: 90px; left: 85%; top: 45%; background: rgba(255, 107, 107, 0.12);"></div>
+
+  <div class="login-container">
+    <div class="login-form-section">
+      <div class="form-title">
+        <h3>用户登录</h3>
+      </div>
+
+      <form action="{% url 'userapp:login' %}" method="post">
+        {% csrf_token %}
+        <!-- 隐藏字段，用于传递 next 参数 -->
+        <input type="hidden" name="next" value="{{ next }}" />
+
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input class="form-control" type="text" id="username" name="username" placeholder="请输入用户名"
+            value="{{ username|default:'' }}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input class="form-control" type="password" id="password" name="password" placeholder="请输入密码"
+            value="{{ password|default:'' }}" required>
+        </div>
+
+        <button type="submit" class="btn-login">登录</button>
+      </form>
+
+      <div class="form-footer">
+        <p>还没有账号？ <a href="{% url 'userapp:register' %}">立即注册</a></p>
+      </div>
+    </div>
+
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <h2>欢迎回来</h2>
+        <p>登录您的账户，享受更多专属服务和优惠</p>
+        <a href="{% url 'userapp:register' %}" class="btn-register">立即注册</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'plugins/jquery/jquery-3.7.1.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/message.js' %}"></script>
+  <script src="{% static 'js/getCookie.js' %}"></script>
+  <script>
+    $(document).ready(function () {
+      // 处理登录表单提交
+      $('form').on('submit', function (e) {
+        e.preventDefault();
+
+        const username = $('#username').val();
+        const password = $('#password').val();
+
+        // 简单前端验证
+        if (!username || !password) {
+          Message.warning('请填写用户名和密码');
+          return;
+        }
+
+        // 发送登录请求
+        $.ajax({
+          url: $(this).attr('action'),
+          method: 'POST',
+          data: $(this).serialize(),
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          success: function (response) {
+            if (response.success) {
+              Message.success('登录成功');
+              // 延迟跳转以显示成功消息
+              setTimeout(function () {
+                window.location.href = response.redirect_url || '/index';
+              }, 500);
+            } else {
+              Message.error(response.message || '登录失败');
+            }
+          },
+          error: function (xhr, status, error) {
+            if (xhr.status === 403) {
+              Message.error('CSRF token错误，请刷新页面重试');
+            } else {
+              Message.error('登录请求失败，请稍后重试');
+            }
+          }
+        });
+      });
+
+
+    });
+  </script>
+</body>
+
+</html>

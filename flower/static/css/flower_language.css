@@ -1,0 +1,15 @@
+.hy-container {
+  margin-top: 52px;
+  margin-left: 150px;
+  width: 140vh;
+}
+
+.hy-container img {
+  width: 100%;
+  height: 30vh;
+  object-fit: cover;
+  /* 保持图片比例并裁剪多余部分 */
+  object-position: center;
+  /* 图片居中显示 */
+  border-radius: 10px;
+}

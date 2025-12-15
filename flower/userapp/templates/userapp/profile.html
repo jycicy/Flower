@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人主页 - 鲜花商城</title>
+  {% load static %}
+  <link rel="icon" type="image/x-icon" href="{% static 'img/logo/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff6b6b;
+      --secondary-color: #4ecdc4;
+      --dark-color: #1a1a2e;
+      --light-color: #f8f9fa;
+      --success-color: #20bf6b;
+      --warning-color: #f39c12;
+    }
+
+    body {
+      background-color: #f7f7f7;
+      font-family: Arial, sans-serif;
+      padding-top: 80px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: none;
+      border-radius: 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      color: var(--primary-color) !important;
+      font-size: 1.8rem;
+    }
+
+    .navbar-nav>li>a {
+      font-weight: 500;
+      transition: all 0.3s ease;
+      color: var(--dark-color);
+    }
+
+    .navbar-nav>li>a:hover {
+      color: var(--primary-color) !important;
+    }
+
+    .profile-container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ddd;
+    }
+
+    .profile-info {
+      flex: 1;
+      margin-left: 20px;
+    }
+
+    .profile-info h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .profile-info p {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .order-container,
+    .address-container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .order-header,
+    .address-header {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .order-status {
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    .order-status div {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      background: #f8f9fa;
+      margin: 0 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .order-status div:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .order-status div i {
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    .order-status div p {
+      margin: 10px 0 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .address-list {
+      margin-top: 20px;
+    }
+
+    .address-item {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .address-item.default {
+      border-color: var(--primary-color);
+      background-color: rgba(255, 107, 107, 0.05);
+    }
+
+    .address-item.default::before {
+      content: "默认地址";
+      position: absolute;
+      top: -10px;
+      right: 10px;
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .address-actions {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+
+    .address-form {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px dashed #ddd;
+      border-radius: 8px;
+    }
+
+    .btn-action {
+      margin-left: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .profile-info {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+
+      .order-status {
+        flex-direction: column;
+      }
+
+      .order-status div {
+        margin: 10px 0;
+      }
+    }
+
+    h2 {
+      color: var(--dark-color);
+      font-weight: bold;
+    }
+
+    .logo {
+      height: 30px;
+      background-color: transparent;
+      margin: 10px 0 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 导航栏 -->
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <img class="logo" src="{% static 'img/logo.png' %}" alt="Logo">
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/index"><i class="fas fa-home"></i> 首页</a></li>
+          <li><a href="/goods"><i class="fas fa-seedling"></i> 鲜花</a></li>
+          <li><a href="/cart"><i class="fas fa-shopping-cart"></i> 购物车</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fas fa-user"></i>
+              {% if user.nickname %}
+              {{ user.nickname }}
+              {% else %}
+              {{ user.username }}
+              {% endif %}
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url 'userapp:profile' %}"><i class="fas fa-user-cog"></i> 个人资料</a></li>
+              <li><a href="#"><i class="fas fa-key"></i> 修改密码</a></li>
+              <li><a href="{% url 'userapp:logout' %}"><i class="fas fa-sign-out-alt"></i> 退出</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- 个人资料 -->
+    <div class="profile-container">
+      <div class="profile-header">
+        {% if user.avatar %}
+        <img src="{{ user.avatar.url }}" alt="头像" class="profile-avatar">
+        {% else %}
+        <img src="{% static 'img/default_avatar.png' %}" alt="默认头像" class="profile-avatar">
+        {% endif %}
+        <div class="profile-info">
+          <h2>
+            {% if user.nickname %}
+            {{ user.nickname }}
+            {% else %}
+            {{ user.username }}
+            {% endif %}
+          </h2>
+          <br>
+
+          <p>{{ user.email }}</p>
+        </div>
+        <button class="btn btn-primary" onclick="toggleEditForm()">编辑资料</button>
+        <!-- <br>
+        详细信息按钮
+        <button class="btn btn-info">详细资料</button> -->
+
+      </div>
+
+      <div id="editForm" style="display: none; margin-top: 20px;">
+        <form id="profileForm" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="nickname">昵称</label>
+            <input type="text" class="form-control" id="nickname" name="nickname"
+              value="{{ user.nickname|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label for="avatar">头像</label>
+            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+          </div>
+          <button type="submit" class="btn btn-success">保存</button>
+          <button type="button" class="btn btn-secondary" onclick="toggleEditForm()">取消</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 订单模块 -->
+    <div class="order-container">
+      <div class="order-header">我的订单</div>
+      <div class="order-status">
+        <div id="pending-payment">
+          <i class="fas fa-credit-card"></i>
+          <p>待付款</p>
+          <p>{{ orders_pending_count }}</p>
+        </div>
+        <div id="pending-shipment">
+          <i class="fas fa-truck"></i>
+          <p>待发货</p>
+          <p>{{ orders_paid_count }}</p>
+        </div>
+        <div id="pending-receipt">
+          <i class="fas fa-box"></i>
+          <p>待收货</p>
+          <p>{{ orders_shipped_count }}</p>
+        </div>
+        <div id="completed">
+          <i class="fas fa-star"></i>
+          <p>已完成</p>
+          <p>{{ orders_completed_count }}</p>
+        </div>
+        <div>
+          <i class="fas fa-undo-alt"></i>
+          <p>退款/售后</p>
+          <p>0</p>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- 地址管理模块 -->
+    <div class="address-container">
+      <div class="address-header">
+        <span>地址管理</span>
+        <button class="btn btn-primary" onclick="showAddressForm()">
+          <i class="fas fa-plus"></i> 添加新地址
+        </button>
+      </div>
+
+      <!-- 地址列表 -->
+      <div class="address-list" id="addressList">
+        <!-- 地址项将通过JavaScript动态加载 -->
+      </div>
+
+
+      <!-- 地址表单 (默认隐藏) -->
+      <div id="addressForm" class="address-form" style="display: none;">
+        <h4 id="formTitle">添加新地址</h4>
+        <form id="addressFormContent">
+          <input type="hidden" id="addressId">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="recipientName">收货人</label>
+                <input type="text" class="form-control" id="recipientName" placeholder="请输入收货人姓名">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="recipientPhone">联系电话</label>
+                <input type="text" class="form-control" id="recipientPhone" placeholder="请输入联系电话">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="province">所在地区</label>
+            <div class="row">
+              <div class="col-md-4">
+                <select class="form-control" id="province">
+                  <option value="">请选择省份</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select class="form-control" id="city">
+                  <option value="">请选择城市</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select class="form-control" id="district">
+                  <option value="">请选择区县</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="detailAddress">详细地址</label>
+            <textarea class="form-control" id="detailAddress" rows="3" placeholder="请输入详细地址，如街道、楼牌号等"></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="setDefault"> 设为默认地址
+              </label>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-success" onclick="saveAddress()">保存地址</button>
+          <button type="button" class="btn btn-default" onclick="cancelAddressForm()">取消</button>
+        </form>
+      </div>
+
+
+    </div>
+  </div>
+
+  <script src="{% static 'plugins/jquery/jquery-3.7.1.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- 引入消息组件 -->
+  <script src="{% static 'js/message.js' %}"></script>
+
+  <script>
+    function toggleEditForm() {
+      const form = document.getElementById('editForm');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // 表单提交处理
+    document.getElementById('profileForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const nickname = document.getElementById('nickname').value;
+      const fileInput = document.getElementById('avatar');
+      const file = fileInput.files[0];
+
+      // 使用 axios 发送 POST 请求
+      axios.post('{% url "userapp:profile" %}', formData, {
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      })
+        .then(function (response) {
+          if (response.data.msg) {
+            // 使用消息组件显示成功消息
+            Message.success(response.data.msg);
+
+            // 如果修改成功，更新页面内容而不是重新加载
+            if (response.data.msg === '修改成功') {
+              // 更新昵称显示
+              const nicknameElements = document.querySelectorAll('.profile-info h2, .dropdown-toggle');
+              nicknameElements.forEach(element => {
+                if (nickname) {
+                  element.textContent = nickname;
+                }
+              });
+
+              // 如果上传了新头像，更新头像显示
+              if (file) {
+                // 这里需要后端返回新的头像URL，或者重新加载页面
+                setTimeout(() => {
+                  location.reload();
+                }, 1000);
+              }
+
+              // 隐藏编辑表单
+              document.getElementById('editForm').style.display = 'none';
+            }
+          }
+        })
+        .catch(function (error) {
+          console.error('Error:', error);
+          // 使用消息组件显示错误消息
+          Message.error('修改失败，请重试');
+        });
+    });
+
+    // 地址管理功能
+    // 页面加载时获取用户地址列表和城市数据
+    document.addEventListener('DOMContentLoaded', function () {
+      loadAddresses();
+      loadCityData();
+    });
+
+    // 获取城市数据
+    let cityData = [];
+    function loadCityData() {
+      axios.get('{% url "userapp:city_data" %}')
+        .then(function (response) {
+          if (response.data.provinces) {
+            cityData = response.data.provinces;
+            // console.log('城市数据加载成功:', cityData);
+            populateProvinces();
+          }
+        })
+        .catch(function (error) {
+          console.error('获取城市数据失败:', error);
+        });
+    }
+
+    // 填充省份下拉框
+    function populateProvinces() {
+      const provinceSelect = document.getElementById('province');
+      provinceSelect.innerHTML = '<option value="">请选择省份</option>';
+
+      cityData.forEach(province => {
+        const option = document.createElement('option');
+        option.value = province.name;
+        option.textContent = province.name;
+        provinceSelect.appendChild(option);
+      });
+    }
+
+    // 省市联动
+    document.getElementById('province').addEventListener('change', function () {
+      const cityName = this.value;
+      const citySelect = document.getElementById('city');
+      const districtSelect = document.getElementById('district');
+
+      // 清空市区选项
+      citySelect.innerHTML = '<option value="">请选择城市</option>';
+      districtSelect.innerHTML = '<option value="">请选择区县</option>';
+
+      if (!cityName) return;
+
+      // 查找选中的省份数据
+      const selectedProvince = cityData.find(province => province.name === cityName);
+      if (selectedProvince && selectedProvince.city) {
+        selectedProvince.city.forEach(city => {
+          const option = document.createElement('option');
+          option.value = city.name;
+          option.textContent = city.name;
+          citySelect.appendChild(option);
+        });
+      }
+    });
+
+    document.getElementById('city').addEventListener('change', function () {
+      const provinceName = document.getElementById('province').value;
+      const cityName = this.value;
+      const districtSelect = document.getElementById('district');
+
+      // 清空区县选项
+      districtSelect.innerHTML = '<option value="">请选择区县</option>';
+
+      if (!provinceName || !cityName) return;
+
+      // 查找选中的省份和城市数据
+      const selectedProvince = cityData.find(province => province.name === provinceName);
+      if (selectedProvince && selectedProvince.city) {
+        const selectedCity = selectedProvince.city.find(city => city.name === cityName);
+        if (selectedCity && selectedCity.area) {
+          selectedCity.area.forEach(area => {
+            const option = document.createElement('option');
+            option.value = area;
+            option.textContent = area;
+            districtSelect.appendChild(option);
+          });
+        }
+      }
+    });
+
+    // 获取用户地址列表
+    function loadAddresses() {
+      axios.get('{% url "userapp:address_list" %}')
+        .then(function (response) {
+          renderAddresses(response.data.addresses);
+        })
+        .catch(function (error) {
+          console.error('获取地址列表失败:', error);
+          Message.error('获取地址列表失败');
+        });
+    }
+
+    // 渲染地址列表
+    function renderAddresses(addresses) {
+      const addressList = document.getElementById('addressList');
+      addressList.innerHTML = '';
+
+      if (addresses.length === 0) {
+        addressList.innerHTML = '<p class="text-center text-muted">暂无收货地址，请添加新地址</p>';
+        return;
+      }
+
+      addresses.forEach(function (address) {
+        const addressItem = document.createElement('div');
+        addressItem.className = 'address-item' + (address.is_default ? ' default' : '');
+        addressItem.innerHTML = `
+            <div class="address-actions">
+                <button class="btn btn-sm ${address.is_default ? 'btn-success' : 'btn-default'}" onclick="setDefaultAddress(${address.id})">
+                    ${address.is_default ? '<i class="fas fa-check-circle"></i> 默认' : '设为默认'}
+                </button>
+                <button class="btn btn-sm btn-info btn-action" onclick="editAddress(${address.id})">
+                    <i class="fas fa-edit"></i> 编辑
+                </button>
+                <button class="btn btn-sm btn-danger btn-action" onclick="deleteAddress(${address.id})">
+                    <i class="fas fa-trash"></i> 删除
+                </button>
+            </div>
+            <h4>${address.receiver_name} <small>${address.receiver_phone}</small></h4>
+            <p>${address.province}${address.city}${address.district}${address.detail_address}</p>
+        `;
+        addressList.appendChild(addressItem);
+      });
+    }
+
+    // 显示地址表单
+    function showAddressForm() {
+      document.getElementById('addressForm').style.display = 'block';
+      document.getElementById('formTitle').textContent = '添加新地址';
+      document.getElementById('addressFormContent').reset();
+      document.getElementById('addressId').value = '';
+
+      // 重置下拉框
+      document.getElementById('province').selectedIndex = 0;
+      document.getElementById('city').innerHTML = '<option value="">请选择城市</option>';
+      document.getElementById('district').innerHTML = '<option value="">请选择区县</option>';
+    }
+
+    // 取消地址表单
+    function cancelAddressForm() {
+      document.getElementById('addressForm').style.display = 'none';
+    }
+
+    // 编辑地址
+    function editAddress(addressId) {
+      // 先获取地址信息
+      axios.get('{% url "userapp:address_list" %}')
+        .then(function (response) {
+          const addresses = response.data.addresses;
+          const address = addresses.find(addr => addr.id === addressId);
+
+          if (address) {
+            // 填充表单数据
+            document.getElementById('addressId').value = address.id;
+            document.getElementById('recipientName').value = address.receiver_name;
+            document.getElementById('recipientPhone').value = address.receiver_phone;
+            document.getElementById('detailAddress').value = address.detail_address;
+            document.getElementById('setDefault').checked = address.is_default;
+
+            // 设置省份
+            document.getElementById('province').value = address.province;
+
+            // 触发省份选择事件以加载城市
+            const provinceEvent = new Event('change');
+            document.getElementById('province').dispatchEvent(provinceEvent);
+
+            // 等待城市选项加载完成后再设置城市
+            setTimeout(() => {
+              document.getElementById('city').value = address.city;
+
+              // 触发城市选择事件以加载区县
+              const cityEvent = new Event('change');
+              document.getElementById('city').dispatchEvent(cityEvent);
+
+              // 等待区县选项加载完成后再设置区县
+              setTimeout(() => {
+                document.getElementById('district').value = address.district;
+              }, 100);
+            }, 100);
+
+            // 显示表单
+            document.getElementById('addressForm').style.display = 'block';
+            document.getElementById('formTitle').textContent = '编辑地址';
+          }
+        })
+        .catch(function (error) {
+          console.error('获取地址信息失败:', error);
+          Message.error('获取地址信息失败');
+        });
+    }
+
+    // 保存地址（新增或更新）
+    function saveAddress() {
+      const addressId = document.getElementById('addressId').value;
+      const data = {
+        receiver_name: document.getElementById('recipientName').value,
+        receiver_phone: document.getElementById('recipientPhone').value,
+        province: document.getElementById('province').value,
+        city: document.getElementById('city').value,
+        district: document.getElementById('district').value,
+        detail_address: document.getElementById('detailAddress').value,
+        is_default: document.getElementById('setDefault').checked
+      };
+
+      // 表单验证
+      if (!data.receiver_name) {
+        Message.error('请输入收货人姓名');
+        return;
+      }
+
+      if (!data.receiver_phone) {
+        Message.error('请输入联系电话');
+        return;
+      }
+
+      if (!data.province || !data.city || !data.district) {
+        Message.error('请选择完整的地区信息');
+        return;
+      }
+
+      if (!data.detail_address) {
+        Message.error('请输入详细地址');
+        return;
+      }
+
+      let url;
+      if (addressId) {
+        // 更新地址
+        url = '{% url "userapp:update_address" 0 %}'.replace('0', addressId);
+      } else {
+        // 新增地址
+        url = '{% url "userapp:add_address" %}';
+      }
+
+      axios.post(url, data, {
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(function (response) {
+          if (response.data.success) {
+            Message.success(response.data.message);
+            cancelAddressForm();
+            loadAddresses(); // 重新加载地址列表
+          } else {
+            Message.error(response.data.message);
+          }
+        })
+        .catch(function (error) {
+          console.error('保存地址失败:', error);
+          Message.error('保存地址失败');
+        });
+    }
+
+    // 删除地址
+    function deleteAddress(addressId) {
+      if (confirm('确定要删除这个地址吗？')) {
+        axios.post('{% url "userapp:delete_address" 0 %}'.replace('0', addressId), {}, {
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+        })
+          .then(function (response) {
+            if (response.data.success) {
+              Message.success(response.data.message);
+              loadAddresses(); // 重新加载地址列表
+            } else {
+              Message.error(response.data.message);
+            }
+          })
+          .catch(function (error) {
+            console.error('删除地址失败:', error);
+            Message.error('删除地址失败');
+          });
+      }
+    }
+
+    // 设置默认地址
+    function setDefaultAddress(addressId) {
+      axios.post('{% url "userapp:set_default_address" 0 %}'.replace('0', addressId), {}, {
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      })
+        .then(function (response) {
+          if (response.data.success) {
+            Message.success(response.data.message);
+            loadAddresses(); // 重新加载地址列表
+          } else {
+            Message.error(response.data.message);
+          }
+        })
+        .catch(function (error) {
+          console.error('设置默认地址失败:', error);
+          Message.error('设置默认地址失败');
+        });
+    }
+  </script>
+
+  <!-- 我的订单 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('pending-payment').addEventListener('click', function () {
+        location.href = '{% url "orderapp:pending_payment" %}';
+      });
+
+      document.getElementById('pending-shipment').addEventListener('click', function () {
+        location.href = '{% url "orderapp:pending_shipment" %}';
+      });
+
+      document.getElementById('pending-receipt').addEventListener('click', function () {
+        location.href = '{% url "orderapp:pending_receipt" %}';
+      });
+
+      document.getElementById('completed').addEventListener('click', function () {
+        location.href = '{% url "orderapp:completed" %}';
+      });
+    });
+  </script>
+
+</body>
+
+</html>

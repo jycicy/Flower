@@ -1,0 +1,53 @@
+<!-- orderapp/templates/orderapp/payment_fail.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>支付失败</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .fail-icon {
+      color: #dc3545;
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="fail-icon">✗</div>
+    <h1>支付失败</h1>
+    <p>{{ error }}</p>
+    <a href="javascript:history.back()" class="btn">重新支付</a>
+    <a href="/index/" class="btn">返回首页</a>
+  </div>
+</body>
+
+</html>

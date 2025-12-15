@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单确认</title>
+  {% load static %}
+  <link rel="icon" type="image/x-icon" href="{% static 'img/logo/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: #2c3e50;
+      font-size: 2rem;
+    }
+
+    .header p {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+
+    .main-content {
+      display: flex;
+      gap: 30px;
+    }
+
+    /* 左侧区域 (60%) */
+    .left-column {
+      flex: 6;
+    }
+
+    /* 右侧区域 (40%) */
+    .right-column {
+      flex: 4;
+    }
+
+    /* 模块基础样式 */
+    .module {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .module-header {
+      border-bottom: 2px solid #eee;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .module-header h2 {
+      color: #2c3e50;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .module-header h2 i {
+      color: #3498db;
+    }
+
+
+    /* 订单信息模块 */
+    .order-items {
+      margin-bottom: 20px;
+    }
+
+    .order-item {
+      display: flex;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      background-color: #ecf0f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      overflow: hidden;
+    }
+
+    .item-image img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #2c3e50;
+    }
+
+    .item-spec {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .item-price-quantity {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .item-price {
+      font-weight: 600;
+      color: #e74c3c;
+    }
+
+    .item-quantity {
+      color: #7f8c8d;
+    }
+
+    .order-summary {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .summary-item.total {
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #e74c3c;
+    }
+
+    /* 付款模块 */
+    .payment-methods {
+      margin-bottom: 25px;
+    }
+
+    .payment-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .payment-option {
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+      padding: 15px 10px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .payment-option:hover {
+      border-color: #3498db;
+    }
+
+    .payment-option.selected {
+      border-color: #3498db;
+      background-color: #e1f0fa;
+    }
+
+    .payment-option i {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: #3498db;
+    }
+
+    .payment-option .method-name {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .order-total {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .order-total .amount {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+
+    .order-total .label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .submit-order-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .submit-order-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .submit-order-btn:active {
+      transform: translateY(0);
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .payment-options {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+
+  <!-- 地址卡片样式 -->
+  <style>
+    /* 地址卡片样式 */
+    .address-card {
+      border: 2px solid #eee;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .address-card:hover {
+      border-color: #3498db;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .address-card.selected {
+      border-color: #3498db;
+      background-color: #e1f0fa;
+    }
+
+    .address-card h4 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+
+    .address-card p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    .address-card small {
+      color: #7f8c8d;
+    }
+
+
+
+    .btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+
+
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container">
+    <div style="display: none;" data-order-id="{{ order.id }}"></div>
+
+    <div class="header">
+      <h1><i class="fas fa-shopping-cart"></i> 确认订单</h1>
+      <p>请确认您的收货信息和订单详情</p>
+    </div>
+
+    <div class="main-content">
+      <!-- 左侧区域 (60%) -->
+      <div class="left-column">
+
+
+        <!-- 地址模块 -->
+        <div class="module">
+          <div class="module-header">
+            <h2><i class="fas fa-map-marker-alt"></i> 收货地址</h2>
+
+          </div>
+
+
+
+          <div class="address-list" id="addressList">
+            {% for addr in address %}
+            <div class="address-card {% if addr.is_default %}selected{% endif %}" data-address-id="{{ addr.id }}">
+
+              <h4>{{ addr.receiver_name }} <small>{{ addr.receiver_phone }}</small></h4>
+              <p>
+                {{ addr.province }}{{ addr.city }}{{ addr.district }}{{ addr.detail_address }}
+                {% if addr.is_default %}
+                <span class="badge"
+                  style="background-color: #27ae60; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px;">默认</span>
+                {% endif %}
+              </p>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div style="text-align: right; margin-top: 20px;">
+            <a href="/user/profile/">
+              <button class="btn btn-default" style="background-color: #f0efef;">
+                地址管理
+              </button>
+            </a>
+          </div>
+
+
+        </div>
+
+
+
+        <!-- 订单信息模块 -->
+        <div class="module">
+          <div class="module-header">
+            <h2><i class="fas fa-list"></i> 订单信息</h2>
+          </div>
+          <div class="order-items">
+            {% if order and order_items %}
+            <!-- 显示订单中的商品项 -->
+            {% for item in order_items %}
+            <div class="order-item">
+              <div class="item-image">
+                {% if item.product.image_url %}
+                <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+                {% else %}
+                <i class="fas fa-image" style="font-size: 2rem; color: #bdc3c7;"></i>
+                {% endif %}
+              </div>
+              <div class="item-details">
+                <div class="item-name">{{ item.product.title }}</div>
+                <div class="item-spec">包装: {{ item.package }}</div>
+                <div class="item-price-quantity">
+                  <div class="item-price">¥{{ item.price }}</div>
+                  <div class="item-quantity">x{{ item.quantity }}</div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <!-- 默认示例商品 -->
+            <div class="order-item">
+              <div class="item-image">
+                <i class="fas fa-image" style="font-size: 2rem; color: #bdc3c7;"></i>
+              </div>
+              <div class="item-details">
+                <div class="item-name">精品玫瑰花束</div>
+                <div class="item-spec">颜色: 红色 | 数量: 12支</div>
+                <div class="item-price-quantity">
+                  <div class="item-price">¥198.00</div>
+                  <div class="item-quantity">x1</div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+
+          {% if order %}
+          <div class="order-summary">
+            <div class="summary-item">
+              <span>商品总价:</span>
+              <span>¥{{ order.total_amount }}</span>
+            </div>
+            <div class="summary-item">
+              <span>运费:</span>
+              <span>¥0.00</span>
+            </div>
+            <div class="summary-item total">
+              <span>应付总额:</span>
+              <span>¥{{ order.total_amount }}</span>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+
+      </div>
+
+
+
+      <!-- 右侧区域 (40%) -->
+      <div class="right-column">
+
+
+        <!-- 付款模块 -->
+        <div class="module">
+          <div class="module-header">
+            <h2><i class="fas fa-credit-card"></i> 付款方式</h2>
+          </div>
+          <div class="payment-methods">
+            <div class="payment-options">
+              <div class="payment-option selected">
+                <i class="fab fa-alipay"></i>
+                <div class="method-name">支付宝</div>
+              </div>
+              <div class="payment-option">
+                <i class="fab fa-weixin"></i>
+                <div class="method-name">微信支付</div>
+              </div>
+              <div class="payment-option">
+                <i class="fas fa-credit-card"></i>
+                <div class="method-name">银行卡</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-total">
+            <div class="label">应付总额</div>
+            <div class="amount">¥{{ order.total_amount }}</div>
+          </div>
+
+          <button class="submit-order-btn">
+            <i class="fas fa-check-circle"></i> 提交订单
+          </button>
+        </div>
+
+
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <!-- 测试信息
+  {% if order %}
+  <div class="order-success">
+    <h2>订单创建成功！</h2>
+    <p>订单号：{{ order.order_number }}</p>
+    <p>总金额：¥{{ order.total_amount }}</p>
+    <p>收货人：{{ order.receiver_name }}</p>
+    <p>联系电话：{{ order.receiver_phone }}</p>
+    <p>收货地址：{{ order.province }}{{ order.city }}{{ order.district }}{{ order.address }}</p>
+  </div>
+  {% endif %} -->
+
+
+  <script src="{% static 'js/getCookie.js' %}"></script>
+  <script src="{% static 'js/message.js' %}"></script>
+
+  <!-- 收货地址模块 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 地址选择功能
+      document.querySelectorAll('.address-card').forEach(card => {
+        card.addEventListener('click', function () {
+          // 移除所有卡片的选中状态
+          document.querySelectorAll('.address-card').forEach(c => {
+            c.classList.remove('selected');
+          });
+
+          // 为当前卡片添加选中状态
+          this.classList.add('selected');
+
+          // 获取选中的地址ID
+          const addressId = this.getAttribute('data-address-id');
+          const orderId = document.querySelector('[data-order-id]').getAttribute('data-order-id');
+
+          // 更新订单地址信息
+          updateOrderAddress(orderId, addressId);
+        });
+      });
+
+      // 更新订单地址信息
+      function updateOrderAddress(orderId, addressId) {
+        fetch('/order/update_address/' + orderId + '/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({
+            address_id: addressId
+          })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              console.log('地址更新成功:', data.full_address);
+              // 可以在这里更新页面上的地址显示
+            } else {
+              alert('地址更新失败: ' + data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('请求错误: ' + error);
+          });
+      }
+    });
+
+  </script>
+
+
+  <!-- 付款方式选择 -->
+  <script>
+    document.querySelectorAll('.payment-option').forEach(option => {
+      option.addEventListener('click', function () {
+        // 移除所有选项的选中状态
+        document.querySelectorAll('.payment-option').forEach(opt => {
+          opt.classList.remove('selected');
+        });
+        // 添加当前选项的选中状态
+        this.classList.add('selected');
+      });
+    });
+  </script>
+
+
+
+  <!-- 提交订单按钮 -->
+  <script>
+    document.querySelector('.submit-order-btn').addEventListener('click', function () {
+      // 获取选中的地址
+      const selectedAddress = document.querySelector('.address-card.selected');
+      if (!selectedAddress) {
+        alert('请选择收货地址');
+        return;
+      }
+
+      // 获取订单ID（如果页面中有订单信息）
+      const orderElement = document.querySelector('[data-order-id]');
+      const orderId = orderElement ? orderElement.getAttribute('data-order-id') : null;
+
+      if (!orderId) {
+        alert('订单信息不完整');
+        return;
+      }
+      const selectOp = document.querySelector('.payment-option.selected');
+      const iconClass = selectOp.querySelector('i').className;
+
+      if (iconClass === 'fab fa-alipay') {
+        // 发送提交订单请求(alipay)
+        fetch('/order/submit/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({
+            order_id: orderId
+          })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // 跳转到支付宝支付页面
+              if (data.pay_url) {
+                window.location.href = data.pay_url;
+              } else {
+                alert('订单提交成功！正在跳转到支付页面...');
+                window.location.href = '/order/success/?order_id=' + data.order_id;
+              }
+            } else {
+              alert('订单提交失败：' + data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('请求错误: ' + error);
+          });
+      } else {
+        Message.warning('抱歉, 当前仅支持支付宝付款！');
+      }
+
+    });
+  </script>
+
+</body>
+
+</html>

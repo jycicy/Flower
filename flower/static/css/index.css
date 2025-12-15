@@ -1,0 +1,81 @@
+.bg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  /* 确保背景在最底层 */
+}
+
+.bg-image {
+  width: 100%;
+  height: 80vh;
+  background-image: url('../img/img2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bg-image1 {
+  width: 100%;
+  height: 80vh;
+  background-image: url('../img/img1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-top: 200px;
+}
+
+.bg-image2 {
+  width: 100%;
+  height: 80vh;
+  background-image: url('../img/img10.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-top: 300px;
+}
+
+.bg-image3 {
+  width: 100%;
+  height: 50vh;
+  background-image: url('../img/img12.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-top: 30px;
+}
+
+.bg-image4 {
+  width: 100%;
+  height: 80vh;
+  background-image: url('../img/img11.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-top: 30px;
+}
+
+/* 调整卡片样式 */
+.content-container {
+  position: relative;
+  z-index: 10;
+  /* 确保内容在背景上方 */
+  padding-top: 500px;
+  /* 固定距离顶部的间距 */
+  margin-top: 0;
+  /* 移除可能的额外边距 */
+}
+
+.thumbnail {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 添加阴影 */
+  transition: box-shadow 0.3s ease;
+  /* 添加过渡效果 */
+}
+
+.thumbnail:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* 鼠标悬停时增加阴影 */
+}

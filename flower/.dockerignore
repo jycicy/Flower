@@ -1,0 +1,19 @@
+# Python 虚拟环境
+venv/
+# 本地缓存文件
+__pycache__/
+*.pyc
+*.pyo
+# 数据库文件（本地 SQLite，容器用 MySQL）
+db.sqlite3
+# 媒体文件（本地 media，容器用数据卷挂载）
+media/*
+# Docker 相关缓存
+.dockerignore
+Dockerfile
+docker-compose.yml
+# 其他无关文件
+.env
+.git
+.gitignore
+*.log

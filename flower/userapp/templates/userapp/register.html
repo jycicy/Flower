@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>用户注册 - 鲜花商城</title>
+  {% load static %}
+  <link rel="icon" type="image/x-icon" href="{% static 'img/logo/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 彩球背景装饰 */
+    .floating-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 107, 107, 0.1);
+      animation: float 15s infinite ease-in-out;
+      z-index: 0;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+
+      25% {
+        transform: translate(20px, 20px) rotate(90deg);
+      }
+
+      50% {
+        transform: translate(0, 40px) rotate(180deg);
+      }
+
+      75% {
+        transform: translate(-20px, 20px) rotate(270deg);
+      }
+    }
+
+    .register-container {
+      position: relative;
+      z-index: 1;
+      width: 800px;
+      height: 550px;
+      background: rgba(255, 255, 255, 0.95);
+      margin: 5% auto;
+      display: flex;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .welcome-section {
+      flex: 1;
+      background: linear-gradient(135deg, #d9a7c7 0%, #fffcdc 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .register-form-section {
+      flex: 1;
+      padding: 40px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-title {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .form-title h3 {
+      font-size: 24px;
+      color: #333;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #ff6b6b;
+      box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.1);
+      outline: none;
+    }
+
+    .verification-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .verification-input {
+      flex: 1;
+    }
+
+    .btn-verify {
+      padding: 12px 15px;
+      background-color: #4ecdc4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    .btn-verify:hover:not(:disabled) {
+      background-color: #3db5ac;
+    }
+
+    .btn-verify:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .btn-register {
+      width: 100%;
+      padding: 12px;
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .btn-register:hover {
+      background-color: #ff5252;
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .form-footer a {
+      color: #ff6b6b;
+      text-decoration: none;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .welcome-content h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .welcome-content p {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .btn-login {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+      background: white;
+      color: #ff6b6b;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .register-container {
+        flex-direction: column;
+        height: auto;
+        width: 90%;
+        margin: 10% auto;
+      }
+
+      .welcome-section {
+        padding: 30px 20px;
+      }
+
+      .register-form-section {
+        padding: 30px 20px;
+      }
+
+      .verification-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 彩球背景装饰 -->
+  <div class="floating-circle" style="width: 80px; height: 80px; left: 10%; top: 15%;"></div>
+  <div class="floating-circle"
+    style="width: 120px; height: 120px; left: 80%; top: 10%; background: rgba(78, 205, 196, 0.1);"></div>
+  <div class="floating-circle"
+    style="width: 60px; height: 60px; left: 20%; top: 80%; background: rgba(255, 107, 107, 0.15);"></div>
+  <div class="floating-circle"
+    style="width: 100px; height: 100px; left: 70%; top: 70%; background: rgba(78, 205, 196, 0.15);"></div>
+  <div class="floating-circle" style="width: 70px; height: 70px; left: 40%; top: 40%;"></div>
+  <div class="floating-circle"
+    style="width: 90px; height: 90px; left: 85%; top: 45%; background: rgba(255, 107, 107, 0.12);"></div>
+
+  <div class="register-container">
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <h2>欢迎加入</h2>
+        <p>注册账户，享受专属优惠和贴心服务</p>
+        <a href="{% url 'userapp:login' %}" class="btn-login">已有账号？登录</a>
+      </div>
+    </div>
+
+    <div class="register-form-section">
+      <div class="form-title">
+        <h3>注册新用户</h3>
+      </div>
+
+      <form action="{% url 'userapp:register' %}" method="post" id="registerForm">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="username">邮箱地址</label>
+          <input class="form-control" type="email" id="username" name="username" placeholder="请输入邮箱地址" required>
+        </div>
+
+        <div class="form-group">
+          <label for="vcode">验证码</label>
+          <div class="verification-group">
+            <div class="verification-input">
+              <input class="form-control" type="text" id="vcode" name="vcode" placeholder="请输入验证码" required>
+            </div>
+            <button type="button" class="btn-verify" id="sendCodeBtn">获取验证码</button>
+          </div>
+          <div id="error-message" class="error-message"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input class="form-control" type="password" id="password" name="password" placeholder="请输入密码" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password2">确认密码</label>
+          <input class="form-control" type="password" id="password2" name="password2" placeholder="请再次输入密码" required>
+        </div>
+
+        <button type="submit" class="btn-register">注册</button>
+      </form>
+
+      <div class="form-footer">
+        <p>已有账号？ <a href="{% url 'userapp:login' %}">立即登录</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'plugins/jquery/jquery-3.7.1.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/message.js' %}"></script>
+  <script src="{% static 'js/getCookie.js' %}"></script>
+  <script>
+    const csrftoken = getCookie('csrftoken');
+
+    // 设置 AJAX 请求的 CSRF 令牌
+    $.ajaxSetup({
+      headers: { 'X-CSRFToken': csrftoken }
+    });
+
+    // 显示错误信息
+    function showError(message) {
+      const errorElement = $('#error-message');
+      errorElement.text(message).show();
+      setTimeout(() => {
+        errorElement.fadeOut();
+      }, 3000);
+    }
+
+    // 隐藏错误信息
+    function hideError() {
+      $('#error-message').hide();
+    }
+
+    // 发送验证码
+    $('#sendCodeBtn').click(function () {
+      const username = $('#username').val();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!username) {
+        Message.warning('请输入邮箱地址');
+        return;
+      }
+
+      if (!emailRegex.test(username)) {
+        Message.error('请输入正确的邮箱地址');
+        return;
+      }
+
+      const btn = $(this);
+      btn.prop('disabled', true).text('已发送(60)');
+
+      let countdown = 60;
+      const timer = setInterval(() => {
+        countdown--;
+        btn.text(`已发送(${countdown})`);
+        if (countdown <= 0) {
+          clearInterval(timer);
+          btn.prop('disabled', false).text('重新获取');
+        }
+      }, 1000);
+
+      // 发送 AJAX 请求
+      $.ajax({
+        url: "{% url 'userapp:send_mail_vcode' %}",
+        type: 'POST',
+        data: {
+          'username': username
+        },
+        success: function (data) {
+          if (data.msg) {
+            Message.success(data.msg);
+          }
+        },
+        error: function () {
+          Message.error('验证码发送失败，请稍后重试');
+          // 重置按钮状态
+          clearInterval(timer);
+          btn.prop('disabled', false).text('重新获取');
+        }
+      });
+    });
+
+    // 表单验证
+    $('#registerForm').submit(function (e) {
+      e.preventDefault();
+
+      const username = $('#username').val();
+      const vcode = $('#vcode').val();
+      const password = $('#password').val();
+      const password2 = $('#password2').val();
+
+      // 基本验证
+      if (!username || !vcode || !password || !password2) {
+        Message.warning('请填写所有必填字段');
+        return;
+      }
+
+      if (password !== password2) {
+        Message.error('两次输入的密码不一致');
+        return;
+      }
+
+      if (password.length < 6) {
+        Message.warning('密码长度不能少于6位');
+        return;
+      }
+
+      // 提交表单
+      $.ajax({
+        url: "{% url 'userapp:register' %}",
+        type: 'POST',
+        data: {
+          'vcode': vcode,
+          'username': username,
+          'password': password,
+          'password2': password2
+        },
+        success: function (data) {
+          if (data.ok === 1) {
+            // 注册成功，跳转到指定页面
+            Message.success(data.msg || '注册成功');
+            setTimeout(function () {
+              window.location.href = data.redirect_url;
+            }, 600);
+          } else {
+            // 注册失败，显示错误信息
+            Message.error(data.msg || '注册失败，请重试');
+          }
+        },
+        error: function () {
+          Message.error('注册失败，请稍后重试');
+        }
+      });
+    });
+
+    // 输入框事件监听
+    $('#username, #vcode, #password, #password2').on('input', function () {
+      hideError();
+    });
+  </script>
+</body>
+
+</html>

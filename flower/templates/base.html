@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+
+    {% block title %}鲜花商城{% endblock %}
+
+  </title>
+  {% load static %}
+  <link rel="icon" type="image/x-icon" href="{% static 'img/logo/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+  <script src="{% static 'plugins/jquery/jquery-3.7.1.js' %}"></script>
+  <script src="{% static 'plugins/BootStrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/message.js' %}"></script>
+
+
+
+  {% block style %}
+  /* 在这里添加自定义样式 */
+  {% endblock %}
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      height: 30px;
+      background-color: transparent;
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+    }
+
+    .nav-menu li {
+      margin: 0 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-menu li a {
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+
+
+    .nav-menu li a:hover {
+      color: #c91f2c;
+    }
+
+    .nav-menu li a .glyphicon {
+      margin-right: 5px;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background-color: #333;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* 移动端样式 */
+    @media screen and (max-width: 768px) {
+      .nav {
+        padding: 0 15px;
+        height: 60px;
+      }
+
+      .nav-menu {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        flex-direction: column;
+        background-color: #fff;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        padding: 20px 0;
+      }
+
+      .nav-menu.active {
+        left: 0;
+      }
+
+      .nav-menu li {
+        margin: 10px 0;
+      }
+
+      .nav-menu li a {
+        padding: 10px 0;
+        display: block;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .hamburger.active span:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+      }
+
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active span:nth-child(3) {
+        transform: translateY(-10px) rotate(-45deg);
+      }
+    }
+
+    /* 平板样式 */
+    @media screen and (min-width: 769px) and (max-width: 1024px) {
+      .nav-menu li {
+        margin: 0 10px;
+      }
+
+      .nav-menu li a {
+        font-size: 13px;
+      }
+    }
+
+    /* 大屏幕样式 */
+    @media screen and (min-width: 1025px) {
+      .nav-menu li {
+        margin: 0 20px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <img class="logo" src="{% static 'img/logo.png' %}" alt="Logo">
+
+      <ul class="nav-menu">
+        <!-- 搜索框 -->
+        <li>
+          <form class="navbar-form navbar-left" role="search"
+            style="margin: 0; padding: 0; display: flex; align-items: center; height: 100%;" action="/search/"
+            method="GET">
+            <div class="input-group" style="width: 360px;">
+
+              <input type="text" id="searchInput" class="form-control" placeholder="搜索鲜花..." name="keyword"
+                oninput="handleInput()" onkeypress="if(event.key === 'Enter') handleSearch()"
+                style="border-radius: 20px 0 0 20px; height: 30px; font-size: 12px; border: 1px solid #ddd;">
+
+              <span class="input-group-btn">
+
+                <button onclick="handleSearch()" class="btn btn-default"
+                  style="border-radius: 0 20px 20px 0; height: 30px; padding: 4px 12px; border: 1px solid #ddd; border-left: none;">
+                  <span class="glyphicon glyphicon-search"></span>
+                </button>
+
+              </span>
+            </div>
+          </form>
+        </li>
+
+        {% block navbar %}
+
+        {% endblock %}
+
+        {% if user.is_authenticated %}
+        <li>
+          <a href="/user/profile">
+            <img
+              src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'img/default_avatar.png' %}{% endif %}"
+              alt="头像" style="width: 30px; height: 30px; border-radius: 50%;">
+
+
+            {% if user.nickname %}
+            {{ user.nickname }}
+            {% else %}
+            {{ user.username }}
+            {% endif %}
+
+          </a>
+        </li>
+        {% else %}
+        <li><a href="/user/login">登录|注册</a></li>
+        {% endif %}
+
+      </ul>
+
+      <button class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    {% block main %}
+
+    {% endblock %}
+  </main>
+
+  {% block js %}
+
+  {% endblock %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const hamburger = document.querySelector('.hamburger');
+      const navMenu = document.querySelector('.nav-menu');
+
+      hamburger.addEventListener('click', function () {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+      });
+
+      // 点击菜单项后关闭移动端菜单
+      document.querySelectorAll('.nav-menu li a').forEach(link => {
+        link.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          navMenu.classList.remove('active');
+        });
+      });
+
+      // 窗口大小改变时重置菜单状态
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 768) {
+          navMenu.classList.remove('active');
+          hamburger.classList.remove('active');
+        }
+      });
+    });
+  </script>
+
+  <!-- 搜索框 -->
+  <script>
+    // 搜索联想逻辑
+    function handleInput() {
+      const keyword = document.getElementById('searchInput').value.trim();
+
+      if (!keyword) {
+        const suggestBox = document.getElementById('searchSuggest');
+        if (suggestBox) suggestBox.style.display = 'none';
+        return;
+      }
+
+      // 调用后端联想接口
+      fetch(`/search/suggest/?keyword=${encodeURIComponent(keyword)}`)
+        .then(res => res.json())
+        .then(data => {
+          // 创建或获取联想框
+          let suggestBox = document.getElementById('searchSuggest');
+          if (!suggestBox) {
+            suggestBox = document.createElement('div');
+            suggestBox.id = 'searchSuggest';
+            suggestBox.style.cssText = `
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        right: 0;
+                        background: white;
+                        border: 1px solid #ddd;
+                        border-radius: 0 0 5px 5px;
+                        z-index: 1000;
+                        max-height: 200px;
+                        overflow-y: auto;
+                        display: none;
+                    `;
+            document.querySelector('.input-group').appendChild(suggestBox);
+          }
+
+          let html = '';
+          if (data.results.length > 0) {
+            data.results.forEach(item => {
+              html += `<div class="suggest-item" style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;" 
+                                  onclick="selectSuggest('${item.name}')">${item.name}</div>`;
+            });
+          } else {
+            html = '<div class="suggest-item" style="padding: 8px 12px; color: #999;">暂无匹配商品</div>';
+          }
+          suggestBox.innerHTML = html;
+          suggestBox.style.display = 'block';
+        })
+        .catch(err => console.error('联想请求失败', err));
+    }
+
+    // 选择联想项
+    function selectSuggest(name) {
+      document.getElementById('searchInput').value = name;
+      const suggestBox = document.getElementById('searchSuggest');
+      if (suggestBox) suggestBox.style.display = 'none';
+      handleSearch();
+    }
+
+    // 执行搜索
+    function handleSearch() {
+      const keyword = document.getElementById('searchInput').value.trim();
+      if (!keyword) {
+        alert('请输入搜索关键词');
+        return;
+      }
+      window.location.href = `/search/?keyword=${encodeURIComponent(keyword)}`;
+    }
+
+    // 点击其他地方隐藏联想框
+    document.addEventListener('click', function (e) {
+      const suggestBox = document.getElementById('searchSuggest');
+      const searchInput = document.getElementById('searchInput');
+      if (suggestBox && !searchInput.contains(e.target) && !suggestBox.contains(e.target)) {
+        suggestBox.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鲜花</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .container {
+      top: 50px;
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-grid {
+        grid-template-columns: 2fr;
+      }
+    }
+
+    .product-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: #fff;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 15px;
+    }
+
+    .product-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+      height: 50px;
+      overflow: hidden;
+    }
+
+    .product-price {
+      font-size: 18px;
+      color: #e74c3c;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .product-description {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 15px;
+      height: 20px;
+      overflow: hidden;
+    }
+
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      font-size: 18px;
+      color: #666;
+    }
+
+    .error {
+      text-align: center;
+      padding: 50px;
+      color: #e74c3c;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div id="product-list" class="product-grid">
+      <!-- 商品将通过axios请求渲染到这里 -->
+
+      <!-- {% for data in goods %} -->
+      <!-- <a href="/goods/goods_detail/{{data.id}}" target="_blank">
+        <div class="product-card">
+          <img class="product-image" src="{{data.image_url}}" alt="{{data.title}}">
+          <div class="product-info">
+            <div class="product-name">{{data.title}}</div>
+            <div class="product-price">{{data.price}}</div>
+            <div class="product-description">{{data.description}}</div>
+          </div>
+        </div>
+      </a> -->
+      <!-- {% endfor %} -->
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const productGrid = document.querySelector('#product-list');
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.className = 'loading';
+      loadingIndicator.textContent = '加载中...';
+      let currentPage = 1; // 当前页码
+      let isLoading = false; // 防止重复加载
+      let hasNextPage = true; // 是否还有下一页
+
+      // 延迟函数
+      function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      // 加载商品数据
+      async function loadProducts(page) {
+        if (isLoading || !hasNextPage) return;
+        isLoading = true;
+        productGrid.appendChild(loadingIndicator);
+
+        try {
+          // 模拟网络延迟
+          await delay(1000); // 延迟 1 秒
+
+          const response = await fetch(`/goods/api/?page=${page}`);
+          const data = await response.json();
+
+          // 渲染商品
+          data.goods.forEach(item => {
+            const productCard = document.createElement('a');
+            productCard.href = `/goods/goods_detail/${item.id}`;
+            productCard.target = '_blank';
+            productCard.innerHTML = `
+        <div class="product-card">
+          <img class="product-image" src="${item.image_url}" alt="${item.title}">
+          <div class="product-info">
+            <div class="product-name">${item.title}</div>
+            <div class="product-price">${item.price}</div>
+            <div class="product-description">${item.description}</div>
+          </div>
+        </div>
+      `;
+            productGrid.appendChild(productCard);
+          });
+
+          hasNextPage = data.has_next; // 更新是否还有下一页
+        } catch (error) {
+          console.error('加载商品失败:', error);
+        } finally {
+          isLoading = false;
+          productGrid.removeChild(loadingIndicator);
+        }
+      }
+
+      // 监听滚动事件
+      window.addEventListener('scroll', function () {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 10) {
+          // 滚动到底部，加载下一页
+          if (!isLoading && hasNextPage) {
+            loadProducts(++currentPage);
+          }
+        }
+      });
+
+      // 初始化加载第一页
+      loadProducts(currentPage);
+    });
+  </script>
+
+</body>
+
+</html>

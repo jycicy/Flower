@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}花漾{% endblock %}
+
+{% block style %}
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+  }
+
+
+  #cardInput {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px 25px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+  }
+
+  #cardInput:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  #textInput {
+    width: 320px;
+    height: 70px;
+    padding: 12px 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    resize: none;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    font-size: 15px;
+    color: #333;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  #textInput:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05), 0 0 0 3px rgba(74, 144, 226, 0.1);
+  }
+
+  #textInput::placeholder {
+    color: #a0aec0;
+  }
+
+  #addButton {
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+    white-space: nowrap;
+  }
+
+  #addButton:hover {
+    background: linear-gradient(135deg, #357abd 0%, #2c5aa0 100%);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+    transform: translateY(-2px);
+  }
+
+  #addButton:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+  }
+
+  .canvas-container {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 50px);
+    overflow: hidden;
+  }
+
+  .canvas-container canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+
+  /* 添加一些装饰性元素 */
+  .floating-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(74, 144, 226, 0.1);
+    animation: float 15s infinite ease-in-out;
+    z-index: -1;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+      transform: translate(20px, 20px) rotate(90deg);
+    }
+
+    50% {
+      transform: translate(0, 40px) rotate(180deg);
+    }
+
+    75% {
+      transform: translate(-20px, 20px) rotate(270deg);
+    }
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    #cardInput {
+      flex-direction: column;
+      width: 90%;
+      bottom: 20px;
+      padding: 15px;
+    }
+
+    #textInput {
+      width: 100%;
+      height: 60px;
+    }
+
+    #addButton {
+      width: 100%;
+      padding: 12px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<li><a href="/index">首页</a></li>
+<li><a href="/goods">鲜花</a></li>
+<li><a href="/bloomwave" style="color: #c91f2c;">花漾</a></li>
+<li><a href="/other">其他</a></li>
+<li><a href="/about">关于我们</a></li>
+<li><a href="/cart">
+    <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+    购物车
+  </a>
+</li>
+{% endblock %}
+
+{% block main %}
+<div class="canvas-container">
+  <canvas id="myCanvas"></canvas>
+</div>
+
+<div id="cardInput">
+  <textarea id="textInput" placeholder="写下你的心愿，让它随风飘荡..."></textarea>
+  <button id="addButton" onclick="addNewCard()">释放心愿</button>
+</div>
+
+
+<!-- 添加装饰性元素 -->
+<script>
+  // 创建一些装饰性的浮动圆圈
+  document.addEventListener('DOMContentLoaded', function () {
+    const container = document.querySelector('.canvas-container');
+    for (let i = 0; i < 8; i++) {
+      const circle = document.createElement('div');
+      circle.className = 'floating-circle';
+      circle.style.width = Math.random() * 100 + 50 + 'px';
+      circle.style.height = circle.style.width;
+      circle.style.left = Math.random() * 100 + '%';
+      circle.style.top = Math.random() * 100 + '%';
+      circle.style.animationDelay = Math.random() * 5 + 's';
+      circle.style.animationDuration = (15 + Math.random() * 10) + 's';
+      container.appendChild(circle);
+    }
+  });
+</script>
+{% endblock %}
+
+{% block js %}
+<script>
+  let canvas = document.getElementById("myCanvas");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  let ctx = canvas.getContext("2d");
+
+  // 启用高分辨率渲染
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  canvas.width = window.innerWidth * devicePixelRatio;
+  canvas.height = (window.innerHeight - 50) * devicePixelRatio;  // 减去50px
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = (window.innerHeight - 50) + 'px';  // 减去50px
+
+  let mouse = {
+    x: canvas.width / 2 / devicePixelRatio,
+    y: canvas.height / 2 / devicePixelRatio
+  };
+
+  // 监听鼠标移动
+  window.addEventListener('mousemove', function (e) {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  // 监听窗口大小变化
+  window.addEventListener('resize', function (e) {
+    canvas.width = window.innerWidth * devicePixelRatio;
+    canvas.height = (window.innerHeight - 50) * devicePixelRatio;  // 减去50px
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = (window.innerHeight - 50) + 'px';  // 减去50px
+  });
+
+  // 卡片颜色数组 - 更丰富的颜色
+  let colorArray = [
+    '#FFE0B2', '#C8E6C9', '#BBDEFB', '#E1BEE7', '#FFCDD2',
+    '#F8BBD0', '#C5CAE9', '#B2DFDB', '#DCEDC8', '#FFF9C4'
+  ];
+
+  // 卡片边框颜色
+  let borderColorArray = [
+    '#FFA726', '#66BB6A', '#42A5F5', '#BA68C8', '#E57373',
+    '#F06292', '#7986CB', '#4DB6AC', '#AED581', '#FDD835'
+  ];
+
+  // 卡片类
+  function Card(data) {
+    this.id = data.id || Date.now();
+    this.x = data.x;
+    this.y = data.y;
+    this.dx = data.dx;
+    this.dy = data.dy;
+    this.width = data.width;
+    this.height = data.height;
+    this.minWidth = data.width;
+    this.minHeight = data.height;
+    this.maxWidth = data.width * 1.8;
+    this.maxHeight = data.height * 1.8;
+    this.text = data.text;
+    this.color = data.color;
+    this.borderColor = data.borderColor;
+    this.scale = 1; // 当前缩放比例
+
+    // 颜色亮度调整函数
+    this.lightenColor = function (color, percent) {
+      let num = parseInt(color.replace("#", ""), 16);
+      let amt = Math.round(2.55 * percent);
+      let R = (num >> 16) + amt;
+      let G = (num >> 8 & 0x00FF) + amt;
+      let B = (num & 0x0000FF) + amt;
+
+      R = R < 255 ? (R < 1 ? 0 : R) : 255;
+      G = G < 255 ? (G < 1 ? 0 : G) : 255;
+      B = B < 255 ? (B < 1 ? 0 : B) : 255;
+
+      return "#" + (0x1000000 + (R * 0x10000) + (G * 0x100) + B).toString(16).slice(1);
+    };
+
+    // 绘制卡片
+    this.draw = function () {
+      ctx.save();
+
+      // 应用缩放
+      ctx.translate(this.x, this.y);
+      ctx.scale(this.scale, this.scale);
+      ctx.translate(-this.x, -this.y);
+
+      // 绘制卡片背景（带轻微渐变）
+      const gradient = ctx.createLinearGradient(
+        this.x - this.width / 2,
+        this.y - this.height / 2,
+        this.x + this.width / 2,
+        this.y + this.height / 2
+      );
+      gradient.addColorStop(0, this.color);
+      gradient.addColorStop(1, this.lightenColor(this.color, 15));
+
+      ctx.beginPath();
+      ctx.roundRect(this.x - this.width / 2, this.y - this.height / 2,
+        this.width, this.height, 14);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // 添加阴影效果
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.25)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetX = 4;
+      ctx.shadowOffsetY = 4;
+
+      // 绘制边框
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = this.borderColor;
+      ctx.stroke();
+
+      // 内层高光边框
+      ctx.shadowColor = 'transparent';
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.roundRect(this.x - this.width / 2 + 2, this.y - this.height / 2 + 2,
+        this.width - 4, this.height - 4, 12);
+      ctx.stroke();
+
+      // 绘制文字
+      ctx.font = '9px "Microsoft YaHei", Arial, sans-serif';
+      ctx.fillStyle = '#333';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'transparent';
+
+      // 文字换行处理
+      this.wrapText(this.text, this.x, this.y, (this.width - 25), 15);
+
+      ctx.restore();
+    };
+
+    // 文字换行函数
+    this.wrapText = function (text, x, y, maxWidth, lineHeight) {
+      let words = text.split('');
+      let line = '';
+      let lines = [];
+
+      // 简单的字符分组处理
+      for (let i = 0; i < words.length; i++) {
+        let testLine = line + words[i];
+        let metrics = ctx.measureText(testLine);
+        let testWidth = metrics.width;
+
+        if (testWidth > maxWidth && i > 0) {
+          lines.push(line);
+          line = words[i];
+        } else {
+          line = testLine;
+        }
+      }
+      lines.push(line);
+
+      // 绘制多行文字
+      for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i], x, y - (lines.length - 1) * lineHeight / 2 + i * lineHeight);
+      }
+    };
+
+    // 更新卡片状态
+    this.update = function () {
+      // 边界碰撞检测
+      if (this.x + this.width / 2 > canvas.width / devicePixelRatio || this.x - this.width / 2 < 0) {
+        this.dx = -this.dx;
+      }
+      if (this.y + this.height / 2 > canvas.height / devicePixelRatio || this.y - this.height / 2 < 0) {
+        this.dy = -this.dy;
+      }
+
+      // 移动卡片
+      this.x += this.dx;
+      this.y += this.dy;
+
+      // 鼠标交互 - 整体缩放效果
+      let distance = Math.sqrt(Math.pow(mouse.x - this.x, 2) + Math.pow(mouse.y - this.y, 2));
+      let interactionRadius = Math.max(this.width, this.height) + 40;
+
+      if (distance < interactionRadius) {
+        // 计算缩放比例（越近越大）
+        let maxScale = 1.3;
+        let minScale = 1;
+        let scaleRatio = 1 - Math.min(distance / interactionRadius, 1);
+        this.scale = minScale + (maxScale - minScale) * scaleRatio;
+      } else {
+        // 平滑恢复到原始大小
+        if (this.scale > 1) {
+          this.scale = Math.max(1, this.scale - 0.05);
+        }
+      }
+
+      this.draw();
+    };
+  }
+
+
+  // 卡片数组
+  let cardArray = [];
+
+  // 从服务器加载卡片数据
+  async function loadCards() {
+    try {
+      const response = await fetch('/goods/cards/');
+      const result = await response.json();
+
+      if (result.success) {
+        // 为每个卡片设置随机初始位置和速度
+        cardArray = result.cards.map(cardData => {
+          // 如果是新加载的卡片（不是刚创建的），给它随机位置和速度
+          if (!cardData.isNew) {
+            // 设置随机位置（在画布范围内）
+            cardData.x = Math.random() * (canvas.width / devicePixelRatio - cardData.width) + cardData.width / 2;
+            cardData.y = Math.random() * (canvas.height / devicePixelRatio - cardData.height) + cardData.height / 2;
+
+            // 设置随机速度
+            cardData.dx = (Math.random() - 0.5) * 2;
+            cardData.dy = (Math.random() - 0.5) * 2;
+          }
+
+          return new Card(cardData);
+        });
+
+        console.log(`加载了 ${cardArray.length} 个卡片`);
+      } else {
+        console.error('加载卡片失败:', result.message);
+      }
+    } catch (error) {
+      console.error('加载卡片时出错:', error);
+    }
+  }
+
+  // 添加新卡片
+  async function addNewCard() {
+    let textInput = document.getElementById("textInput");
+    let text = textInput.value.trim() || "漂流的心愿";
+
+    if (text.length > 100) {
+      alert("心愿内容不能超过100个字符");
+      return;
+    }
+
+    // 随机选择颜色
+    let colorIndex = Math.floor(Math.random() * colorArray.length);
+    let color = colorArray[colorIndex];
+    let borderColor = borderColorArray[colorIndex];
+
+    // 创建卡片数据
+    let cardData = {
+      text: text,
+      color: color,
+      borderColor: borderColor,
+      x: mouse.x,
+      y: mouse.y,
+      dx: (Math.random() - 0.5) * 2,
+      dy: (Math.random() - 0.5) * 2,
+      width: 140 + Math.random() * 40,
+      height: 100 + Math.random() * 30,
+      isNew: true  // 标记为新创建的卡片
+    };
+
+    try {
+      // 发送到服务器
+      const response = await fetch('/goods/cards/add/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(cardData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // 添加到本地数组，标记为新卡片
+        result.card.isNew = true;
+        cardArray.push(new Card(result.card));
+        // 清空输入框
+        textInput.value = "";
+        console.log('卡片添加成功');
+      } else {
+        alert('添加卡片失败: ' + result.message);
+        console.error('添加卡片失败:', result.message);
+      }
+    } catch (error) {
+      alert('添加卡片失败，请您先登录!');
+      console.error('添加卡片时出错:', error);
+    }
+  }
+
+  // 获取CSRF token的辅助函数
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // 支持回车键添加卡片
+  document.getElementById("textInput").addEventListener("keypress", function (event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      addNewCard();
+    }
+  });
+
+  // 动画循环
+  function animate() {
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width / devicePixelRatio, canvas.height / devicePixelRatio);
+
+    for (let card of cardArray) {
+      card.update();
+    }
+  }
+
+  // 初始化
+  loadCards().then(() => {
+    animate();
+  });
+
+  // 为Canvas添加圆角矩形方法（如果浏览器不支持）
+  if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, width, height, radius) {
+      if (width < 2 * radius) radius = width / 2;
+      if (height < 2 * radius) radius = height / 2;
+      this.beginPath();
+      this.moveTo(x + radius, y);
+      this.arcTo(x + width, y, x + width, y + height, radius);
+      this.arcTo(x + width, y + height, x, y + height, radius);
+      this.arcTo(x, y + height, x, y, radius);
+      this.arcTo(x, y, x + width, y, radius);
+      this.closePath();
+      return this;
+    };
+  }
+</script>
+{% endblock %}

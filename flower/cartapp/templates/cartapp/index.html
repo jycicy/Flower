@@ -1,0 +1,583 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}购物车{% endblock %}
+
+{% block style %}
+
+<style>
+    .media-object {
+        object-fit: cover;
+    }
+
+    .table>tbody>tr>td {
+        vertical-align: middle;
+    }
+
+    .panel {
+        border: 1px solid #ddd;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    }
+
+    #total-price {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .product-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    .empty-cart {
+        text-align: center;
+        margin-top: 100px;
+        padding: 40px;
+    }
+
+    .empty-cart h4 {
+        margin-bottom: 20px;
+        color: #666;
+    }
+
+    .subtotal {
+        font-weight: bold;
+        color: #d63384;
+    }
+
+    /* 添加 a 标签样式 */
+    a {
+        text-decoration: none;
+        /* 取消下划线 */
+        color: inherit;
+        /* 默认使用继承颜色，不改变字体颜色 */
+        transition: color 0.3s ease;
+        /* 添加颜色过渡效果 */
+    }
+
+    /* 悬停时的样式 */
+    a:hover {
+        text-decoration: none;
+        /* 确保悬停时也没有下划线 */
+        color: #c91f2c;
+        /* 悬停时变为红色 */
+    }
+
+    /* 特殊处理导航栏中的购物车链接 */
+    .navbar-nav>li>a:hover {
+        color: #c91f2c !important;
+        /* 导航栏链接悬停时变红 */
+    }
+</style>
+
+{% endblock %}
+
+{% block navbar %}
+<li><a href="/index">首页</a></li>
+<li><a href="/goods">鲜花</a></li>
+<li><a href="/bloomwave">花漾</a></li>
+<li><a href="/other">其他</a></li>
+<li><a href="/about">关于我们</a></li>
+<li>
+    <a href="/cart" style="color: #c91f2c;">
+        <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+        购物车</a>
+</li>
+{% endblock %}
+
+
+<!-- 购物车主页面 -->
+{% block main %}
+
+<div class="container">
+
+    {% if cart_items %}
+    <!-- 购物车内容 -->
+    <div id="cart-content">
+        <table class="table table-striped" style="margin-top: 60px;">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">
+                        <input type="checkbox" id="select-all">全选
+                    </th>
+                    <th>商品信息</th>
+                    <th>包装</th>
+                    <th>单价</th>
+                    <th>数量</th>
+                    <th>小计</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr data-item-id="{{ item.id }}">
+                    <td>
+                        <input type="checkbox" class="item-checkbox" checked>
+                    </td>
+                    <td>
+                        <div class="media">
+                            <a href="{{ item.product.get_absolute_url }}" target="_blank">
+
+                                <div class="media-left">
+
+                                    {% if item.product.image_url %}
+                                    <img src="{{ item.product.image_url }}" class="media-object product-image">
+                                    {% else %}
+                                    <img src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23f9f9f9'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='10' fill='%23cccccc'%3E%E5%9B%BE%E7%89%87%3C/text%3E%3C/svg%3E"
+                                        class="media-object product-image">
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="media-body">
+                                    <div class="product-id" data-product-id="{{ item.product.id }}"
+                                        style="display: none;"></div>
+                                    <h5 class="media-heading">{{ item.product.title }}</h5>
+                                    <p>{{ item.product.description|default:"暂无描述" }}</p>
+                                </div>
+
+                            </a>
+
+                        </div>
+                    </td>
+                    <td>
+
+                        <div class="from-control package-select" style="width: 120px;" disabled>
+                            <h6>{{ item.package }}</h6>
+                        </div>
+                    </td>
+                    <td>¥{{ item.product.price }}</td>
+                    <td>
+                        <div class="input-group" style="width: 120px;">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default minus-btn" type="button">-</button>
+                            </span>
+                            <input type="text" class="form-control text-center quantity-input"
+                                value="{{ item.quantity }}" readonly>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default plus-btn" type="button">+</button>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="subtotal">¥{{ item.get_total_price|floatformat:2 }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm delete-btn">删除</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 结算栏 -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id="select-all-bottom" checked> 全选
+                                    </label>
+                                    <button class="btn btn-default" id="delete-selected"
+                                        style="margin-left: 10px;">删除选中商品</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <p>已选择 <span id="selected-count">{{ cart_items.count }}</span> 件商品</p>
+                                <p>总价：<span id="total-price"
+                                        style="font-size: 20px; color: #c91f2c; font-weight: bold;">¥{{ total_price
+                                        }}</span></p>
+
+                                <button class="btn btn-success btn-lg" id="checkout-btn">去结算</button>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {% else %}
+    <!-- 空购物车 -->
+    <div class="empty-cart">
+        <h4>您的购物车是空的</h4>
+        <p>赶快去挑选您喜欢的鲜花吧！</p>
+        <a href="/goods" class="btn btn-primary">去逛逛</a>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+<!-- js部分 -->
+{% block js %}
+<script src="{% static 'js/message.js' %}"></script>
+<script src="{% static 'plugins/axios/axios.min.js' %}"></script>
+<script src="{% static 'js/getCookie.js' %}"></script>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // 使用 dataset 或类名判断是否启用购物车功能
+        const cartContent = document.getElementById('cart-content');
+        if (!cartContent) return;
+
+
+        const selectAll = document.getElementById('select-all');
+        const selectAllBottom = document.getElementById('select-all-bottom');
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+
+        // 同步头部全选框状态
+        selectAll.addEventListener('change', function () {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            selectAllBottom.checked = selectAll.checked;
+            updateSummary();
+        });
+
+
+        // 同步底部全选框状态
+        selectAllBottom.addEventListener('change', function () {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllBottom.checked;
+            });
+            selectAll.checked = selectAllBottom.checked;
+            updateSummary();
+        });
+
+
+        // 单个复选框状态变化时更新全选框状态
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                selectAll.checked = allChecked;
+                selectAllBottom.checked = allChecked;
+                updateSummary();
+            });
+        });
+
+
+        // 数量增功能
+        document.querySelectorAll('.plus-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.parentElement.previousElementSibling;
+                const itemId = this.closest('tr').dataset.itemId;
+                const newQuantity = parseInt(input.value) + 1;
+                input.value = newQuantity;
+                updateSubtotal(this.closest('tr'));
+                updateSummary();
+                updateItemQuantity(itemId, newQuantity);
+            });
+        });
+
+
+        // 数量减功能
+        document.querySelectorAll('.minus-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.parentElement.nextElementSibling;
+                const itemId = this.closest('tr').dataset.itemId;
+                if (parseInt(input.value) > 1) {
+                    const newQuantity = parseInt(input.value) - 1;
+                    input.value = newQuantity;
+                    updateSubtotal(this.closest('tr'));
+                    updateSummary();
+                    updateItemQuantity(itemId, newQuantity);
+                }
+            });
+        });
+
+
+        // 删除功能(单个删除)
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function () {
+
+                if (confirm('您确定要删除该商品吗?')) {
+                    const row = this.closest('tr');
+                    const itemId = row.dataset.itemId;
+                    deleteCartItem(itemId, row);
+                }
+
+
+
+            });
+        });
+
+
+        // 删除选中商品(多选删除)
+        document.getElementById('delete-selected').addEventListener('click', function () {
+            if (confirm('确定要删除选中商品吗？')) {
+                document.querySelectorAll('.item-checkbox:checked').forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    const itemId = row.dataset.itemId;
+                    console.log('删除商品id:', itemId);
+                    deleteCartItem(itemId, row);
+                });
+            }
+        });
+
+
+        // 更新小计
+        function updateSubtotal(row) {
+            const priceText = row.children[3].textContent;
+            const price = parseFloat(priceText.replace('¥', ''));
+            const quantity = parseInt(row.querySelector('.quantity-input').value);
+            const packageSelect = row.querySelector('.package-select');
+            let packagePrice = 0;
+
+            // 修正：正确获取包装价格
+            if (packageSelect.textContent.includes('¥10')) {
+                packagePrice = 10;
+            } else if (packageSelect.textContent.includes('¥29')) {
+                packagePrice = 29;
+            }
+
+            const subtotal = (price + packagePrice) * quantity;
+            row.querySelector('.subtotal').textContent = '¥' + subtotal.toFixed(2);
+        }
+
+
+        // 更新总计和选中数量
+        function updateSummary() {
+            let totalCount = 0;
+            let totalPrice = 0;
+
+            document.querySelectorAll('.item-checkbox:checked').forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const quantity = parseInt(row.querySelector('.quantity-input').value);
+                const priceText = row.children[3].textContent;
+                const price = parseFloat(priceText.replace('¥', ''));
+                const packageSelect = row.querySelector('.package-select');
+                let packagePrice = 0;
+
+                // 修正：正确获取包装价格
+                if (packageSelect.textContent.includes('¥10')) {
+                    packagePrice = 10;
+                } else if (packageSelect.textContent.includes('¥29')) {
+                    packagePrice = 29;
+                }
+
+                totalCount += quantity;
+                totalPrice += (price + packagePrice) * quantity;
+            });
+
+            document.getElementById('selected-count').textContent = totalCount;
+            document.getElementById('total-price').textContent = '¥' + totalPrice.toFixed(2);
+        }
+
+
+        // 更新商品数量（发送到服务器）
+        function updateItemQuantity(itemId, quantity) {
+            axios.post('/cart/update/', {
+                item_id: itemId,
+                quantity: quantity,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('数量更新成功');
+                    } else {
+                        console.log('数量更新失败');
+                    }
+                })
+                .catch(error => {
+                    console.log('请求出错:', error);
+                });
+        }
+
+
+        // 删除购物车商品（发送到服务器）
+        function deleteCartItem(itemId, row) {
+            axios.post('/cart/delete/', {
+                item_id: itemId,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('删除成功');
+
+                    } else {
+                        console.log('删除失败');
+                    }
+                })
+                .catch(error => {
+                    console.log('请求出错:', error);
+
+                });
+            row.remove();
+            updateSummary();
+            checkEmptyCart();
+        }
+
+        // function deleteCartItem(itemId, row) {
+        //     axios.post('/cart/delete/', {
+        //         item_id: itemId,
+        //     }, {
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRFToken': getCookie('csrftoken'),
+        //         },
+        //     })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if (data.success) {
+        //                 console.log('删除成功');
+        //                 row.remove();
+        //                 updateSummary();
+        //                 checkEmptyCart();
+        //             } else {
+        //                 console.log('删除失败');
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.log('请求出错:', error);
+        //             Message.error('请求错误,请稍后再试!');
+        //         });
+        // }
+
+
+        // 获取CSRF Token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+        // 检查购物车是否为空
+        function checkEmptyCart() {
+            const rows = document.querySelectorAll('tbody tr');
+            if (rows.length === 0) {
+                document.getElementById('cart-content').innerHTML = `
+                    <div class="empty-cart">
+                        <h4>您的购物车是空的</h4>
+                        <p>赶快去挑选您喜欢的鲜花吧！</p>
+                        <a href="/goods" class="btn btn-primary">去逛逛</a>
+                    </div>
+                `;
+            }
+        }
+
+
+        // 初始化时确保所有复选框都被选中并更新总计
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = true;
+        });
+        selectAll.checked = true;
+        selectAllBottom.checked = true;
+        updateSummary();
+
+    });
+
+</script>
+
+
+
+<script>
+
+    // 获取所有选中商品的信息
+    function getSelectedItems() {
+        const selectedItems = [];
+        document.querySelectorAll('.item-checkbox:checked').forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            const itemId = row.dataset.itemId;
+            const productName = row.querySelector('.media-heading').textContent.trim();
+            const priceText = row.children[3].textContent; // 单价
+            const price = parseFloat(priceText.replace('¥', ''));
+            const quantity = parseInt(row.querySelector('.quantity-input').value);
+            const packageText = row.children[2].textContent.trim();
+            const subtotalText = row.querySelector('.subtotal').textContent;
+            const subtotal = parseFloat(subtotalText.replace('¥', ''));
+            // 获取商品ID
+            const productId = row.querySelector('.product-id').dataset.productId;
+
+            selectedItems.push({
+                item_id: itemId,
+                product_id: productId,
+                product_name: productName,
+                price: price,
+                quantity: quantity,
+                package: packageText,
+                subtotal: subtotal
+            });
+        });
+
+        return selectedItems;
+    }
+
+    // 结算按钮点击事件
+    document.getElementById('checkout-btn').addEventListener('click', function () {
+        const selectedItems = getSelectedItems();
+
+        if (selectedItems.length === 0) {
+            alert('请至少选择一个商品');
+            return;
+        }
+
+        // 发送选中的商品信息创建订单
+        axios.post('/order/create/', {
+            items: selectedItems
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+            .then(response => {
+                if (response.data.success) {
+                    // 订单创建成功，跳转到订单确认页面
+                    window.location.href = '/order/?order_id=' + response.data.order_id;
+                } else {
+                    alert('订单创建失败: ' + response.data.error);
+                }
+            })
+            .catch(error => {
+                console.error('创建订单时出错:', error);
+                alert('请求错误，请稍后再试');
+            });
+    });
+
+
+    // 获取包装价格
+    function getPackagePrice(packageText) {
+        if (packageText.includes('¥10')) {
+            return 10;
+        } else if (packageText.includes('¥29')) {
+            return 29;
+        }
+        return 0;
+    }
+
+
+
+</script>
+
+{% endblock %}

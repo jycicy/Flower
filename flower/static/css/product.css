@@ -1,0 +1,288 @@
+.logo1 img {
+  position: absolute;
+  width: 130px;
+  height: auto;
+  top: 100px;
+  left: 645px;
+
+  /* 设置 logo 的位置 */
+}
+
+.logo2 img {
+  position: absolute;
+  width: 130px;
+  height: auto;
+  top: 650px;
+  left: 645px;
+
+  /* 设置 logo 的位置 */
+}
+
+.logo3 img {
+  position: absolute;
+  width: 130px;
+  height: auto;
+  top: 1200px;
+  left: 645px;
+
+  /* 设置 logo 的位置 */
+}
+
+.logo4 img {
+  position: absolute;
+  width: 130px;
+  height: auto;
+  top: 1750px;
+  left: 645px;
+
+  /* 设置 logo 的位置 */
+}
+
+.logo5 img {
+  position: absolute;
+  width: 130px;
+  height: auto;
+  top: 2200px;
+  left: 645px;
+
+  /* 设置 logo 的位置 */
+}
+
+.logo6 img {
+  position: absolute;
+  width: 130px;
+  height: auto;
+  top: 2850px;
+  left: 645px;
+
+  /* 设置 logo 的位置 */
+}
+
+/* 设置卡片样式 */
+.ca-container1 {
+  margin-top: 200px;
+  /* 设置容器的顶部外边距 */
+  margin-left: 80px;
+  /* 设置容器的内边距 */
+  width: 300px;
+  height: 400px;
+  background-color: #ffffff;
+  /* 设置容器的背景颜色和透明度 */
+  border-radius: 10px;
+  /* 设置容器的圆角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 添加阴影 */
+  transition: box-shadow 0.3s ease;
+  /* 添加过渡效果 */
+}
+
+.ca-container2 {
+  margin-top: -400px;
+  /* 设置容器的顶部外边距 */
+  margin-left: 400px;
+  /* 设置容器的内边距 */
+  width: 300px;
+  height: 400px;
+  background-color: #ffffff;
+  /* 设置容器的背景颜色和透明度 */
+  border-radius: 10px;
+  /* 设置容器的圆角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 添加阴影 */
+  transition: box-shadow 0.3s ease;
+  /* 添加过渡效果 */
+}
+
+.ca-container3 {
+  margin-top: -400px;
+  /* 设置容器的顶部外边距 */
+  margin-left: 720px;
+  /* 设置容器的内边距 */
+  width: 300px;
+  height: 400px;
+  background-color: #ffffff;
+  /* 设置容器的背景颜色和透明度 */
+  border-radius: 10px;
+  /* 设置容器的圆角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 添加阴影 */
+  transition: box-shadow 0.3s ease;
+  /* 添加过渡效果 */
+}
+
+.ca-container4 {
+  margin-top: -400px;
+  /* 设置容器的顶部外边距 */
+  margin-left: 1040px;
+  /* 设置容器的内边距 */
+  width: 300px;
+  height: 400px;
+  background-color: #ffffff;
+  /* 设置容器的背景颜色和透明度 */
+  border-radius: 10px;
+  /* 设置容器的圆角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 添加阴影 */
+  transition: box-shadow 0.3s ease;
+  /* 添加过渡效果 */
+}
+
+.ca-container5 {
+  margin-top: 150px;
+  /* 设置容器的顶部外边距 */
+  margin-left: 300px;
+  /* 设置容器的内边距 */
+  width: 300px;
+  height: 400px;
+  background-color: #ffffff;
+  /* 设置容器的背景颜色和透明度 */
+  border-radius: 10px;
+  /* 设置容器的圆角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 添加阴影 */
+  transition: box-shadow 0.3s ease;
+  /* 添加过渡效果 */
+}
+
+.ca-container6 {
+  margin-top: -400px;
+  /* 设置容器的顶部外边距 */
+  margin-left: 820px;
+  /* 设置容器的内边距 */
+  width: 300px;
+  height: 400px;
+  background-color: #ffffff;
+  /* 设置容器的背景颜色和透明度 */
+  border-radius: 10px;
+  /* 设置容器的圆角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 添加阴影 */
+  transition: box-shadow 0.3s ease;
+  /* 添加过渡效果 */
+}
+
+.card img {
+  width: 100%;
+  height: 80%;
+  /* 设置图片的宽度和高度 */
+  object-fit: cover;
+  /* 设置图片的填充方式 */
+  border-radius: 10px 10px 0 0;
+  /* 设置图片的圆角 */
+}
+
+.card p {
+  text-align: center;
+  /* 设置文本的对齐方式 */
+  font-size: 18px;
+  /* 设置文本的字体大小 */
+  margin: 10px 0;
+  /* 设置文本的外边距 */
+  color: #333;
+  /* 设置文本的颜色 */
+}
+
+.card .price {
+  text-align: center;
+  /* 设置文本的对齐方式 */
+  font-size: 18px;
+  /* 设置文本的字体大小 */
+  margin: 10px 0;
+  /* 设置文本的外边距 */
+  color: #ff0000;
+  /* 设置文本的颜色 */
+}
+
+a {
+  text-decoration: none;
+  /* 默认情况下去掉下划线 */
+}
+
+a:hover {
+  text-decoration: none;
+  /* 鼠标悬停时也去掉下划线 */
+}
+
+
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  /* 自动调整列数 */
+  gap: 60px;
+  /* 卡片之间的间距 */
+  margin-top: 160px;
+  /* 整体容器的顶部间距 */
+  margin-left: 80px;
+  /* 整体容器的左侧间距 */
+  margin-right: 80px;
+}
+
+.ca-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  /* 设置圆角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 默认阴影 */
+  transition: box-shadow 0.3s ease;
+  /* 添加过渡效果 */
+}
+
+.ca-container:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* 鼠标悬停时增加阴影 */
+}
+
+/* 设置页脚样式 */
+.footer {
+  background-color: #333;
+  /* 深色背景 */
+  color: #fff;
+  /* 白色文字 */
+  text-align: center;
+  /* 居中对齐 */
+  padding: 20px 0;
+  /* 上下内边距 */
+  margin-top: 100px;
+  /* 与页面内容分隔 */
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  /* 居中容器 */
+}
+
+.footer p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.footer-links {
+  list-style: none;
+  /* 去掉列表样式 */
+  padding: 0;
+  margin: 10px 0 0;
+  display: flex;
+  justify-content: center;
+  /* 链接居中 */
+  gap: 15px;
+  /* 链接之间的间距 */
+}
+
+.footer-links li {
+  display: inline;
+}
+
+.footer-links a {
+  color: #c4f66d;
+  /* 链接颜色 */
+  text-decoration: none;
+  /* 去掉下划线 */
+  font-size: 14px;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+  /* 鼠标悬停时显示下划线 */
+}
