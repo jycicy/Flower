@@ -109,9 +109,8 @@ Bash
 python manage.py runserver
 Visit http://127.0.0.1:8000/ in your browser.
 
-效果展示传送门https://jycicy.top/index/
-
 ----------------------------------------------
+
 跑本地:
 
 1.从仓库拉取整个项目根目录是flower
