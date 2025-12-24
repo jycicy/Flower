@@ -1,6 +1,113 @@
-# Flower
+🌸 Flower Shop E-Commerce Platform
+Python
+Django
+MySQL
 
-----------------------------------------------
+A full-featured e-commerce platform for selling flowers, built with Django and MySQL. Features include user authentication, shopping cart management, email verification, and Alipay integration.
+
+🔗 Live Demo: https://jycicy.top/index/
+
+📂 Project Structure
+text
+
+Flower/
+├── flower/                 # Project Root
+│   ├── flower/             # Project Configuration (settings, urls)
+│   ├── orderapp/           # Order & Payment Logic
+│   ├── ... (other apps)
+│   ├── media/              # Static & User Uploaded Media
+│   ├── manage.py           # Django CLI utility
+│   └── ...
+├── requirements.txt        # Project Dependencies
+└── README.md               # Documentation
+🛠️ Prerequisites
+Before you begin, ensure you have the following installed:
+
+Python 3.12 or higher
+MySQL 8.0
+Ngrok (Required for exposing local server for Alipay callbacks)
+Alipay Sandbox Account (For payment testing)
+🚀 Installation & Setup Guide
+1. Clone the Repository
+Bash
+
+git clone https://github.com/jycicy/Flower.git
+cd Flower
+# Ensure you are in the outer directory containing the 'flower' folder
+2. Environment Setup
+Create and activate a virtual environment, then install dependencies.
+
+Bash
+
+# Create virtual environment
+python -m venv venv
+
+# Activate (Windows)
+venv\Scripts\activate
+# Activate (Mac/Linux)
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+3. Database & Email Configuration
+Edit the flower/flower/settings.py file (sometimes named setting.py in your repo):
+
+Database: Update the DATABASES dictionary with your local MySQL credentials (NAME, USER, PASSWORD, HOST, PORT).
+Email: Configure the SMTP settings (Host, Port, User, Password) to enable verification code emails.
+4. Alipay Sandbox & Ngrok Setup (Crucial)
+Since Alipay requires a public URL to send payment notifications, follow these steps carefully:
+
+Start Ngrok:
+Run ngrok to expose your local port (default 8000).
+
+Bash
+
+ngrok http 8000
+Copy the HTTPS URL generated (e.g., https://xxxx-xxxx.ngrok-free.app).
+
+Configure settings.py:
+
+Set ALIPAY_PUBLIC_KEY and APP_PRIVATE_KEY using keys from your Alipay Sandbox.
+Replace any hardcoded base URL with your Ngrok URL.
+Update Callback URLs:
+Open flower/orderapp/utils.py.
+Find the return_url and notify_url variables and update them:
+
+Python
+
+# Example
+return_url = "https://your-ngrok-url/order/return/"
+notify_url = "https://your-ngrok-url/order/notify/"
+5. Database Initialization
+Create the database and apply migrations.
+
+Create a database named flower in MySQL.
+Run migrations:
+Bash
+
+python manage.py makemigrations
+python manage.py migrate
+6. Data Seeding (Adding Products)
+The database is initially empty. You need to manually add product data for the site to function correctly.
+
+Prepare Images:
+Move your product images to this directory:
+flower/media/flowers/uploadpic/newpic/
+
+Insert Data:
+You can use the Django shell (python manage.py shell) or a SQL client.
+Important: The image_url field must include the relative path as shown below:
+
+SQL
+
+-- Example SQL Insert
+INSERT INTO goods (name, price, image_url, ...)
+VALUES ('Rose Bouquet', 99.00, 'flower/media/flowers/uploadpic/newpic/rose.jpg', ...);
+7. Run the Server
+Bash
+
+python manage.py runserver
+Visit http://127.0.0.1:8000/ in your browser.
 
 效果展示传送门https://jycicy.top/index/
 
